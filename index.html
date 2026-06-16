@@ -3,686 +3,567 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Peerless Restoration – Dispatch Board</title>
+<title>Peerless Restoration — Dispatch Board</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:#111;color:#e0e0e0;font-family:system-ui,-apple-system,sans-serif;font-size:14px}
-a{color:#7ec8f7}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#111;color:#e8e8e8;font-size:14px}
+  a{color:inherit;text-decoration:none}
 
-/* HEADER */
-header{position:sticky;top:0;z-index:100;background:#1a1a2e;border-bottom:2px solid #4a4a6a;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
-header h1{font-size:18px;font-weight:700;color:#fff;letter-spacing:.5px}
-header .timestamp{font-size:12px;color:#888}
+  /* HEADER */
+  #header{position:sticky;top:0;z-index:100;background:#1a1a1a;border-bottom:2px solid #333;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+  #header h1{font-size:18px;font-weight:700;color:#fff;letter-spacing:.5px}
+  #header .ts{font-size:12px;color:#888}
+  #header .ts span{color:#aaa}
 
-/* STATS BAR */
-.stats{background:#1e1e2e;border-bottom:1px solid #333;padding:8px 16px;display:flex;gap:16px;flex-wrap:wrap}
-.stat{display:flex;flex-direction:column;align-items:center}
-.stat .val{font-size:22px;font-weight:700;line-height:1}
-.stat .lbl{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.5px}
-.stat.urgent .val{color:#ff4444}
-.stat.repeat .val{color:#f5a623}
-.stat.active .val{color:#4cd964}
-.stat.cancel .val{color:#8e8e8e}
-.stat.total .val{color:#7ec8f7}
+  /* STATS BAR */
+  #stats{display:flex;gap:10px;flex-wrap:wrap;padding:12px 16px;background:#161616;border-bottom:1px solid #2a2a2a}
+  .stat{background:#222;border-radius:8px;padding:8px 14px;text-align:center;min-width:80px}
+  .stat .num{font-size:22px;font-weight:700}
+  .stat .lbl{font-size:11px;color:#888;margin-top:2px}
+  .stat.red .num{color:#f66}
+  .stat.orange .num{color:#f9a}
+  .stat.blue .num{color:#6af}
+  .stat.gray .num{color:#888}
 
-/* SECTION HEADERS */
-.section{margin:14px 12px 0}
-.section-header{padding:8px 12px;border-radius:6px 6px 0 0;font-size:13px;font-weight:700;letter-spacing:.5px;display:flex;align-items:center;gap:8px}
-.badge{background:rgba(0,0,0,.35);border-radius:10px;padding:1px 8px;font-size:11px;font-weight:400}
+  /* SECTIONS */
+  .section{padding:14px 16px}
+  .section-title{font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #333}
 
-.section-urgent .section-header{background:#7b1515;color:#ffd;border:1px solid #ff4444}
-.section-62711 .section-header{background:#0d2f4a;color:#d0eaff;border:1px solid #2a6d9e}
-.section-62704 .section-header{background:#0d3a1a;color:#d0ffd8;border:1px solid #2a7a3a}
-.section-62677 .section-header{background:#3a3200;color:#fff8d0;border:1px solid #8a7800}
-.section-other .section-header{background:#2e1a3a;color:#e8d0ff;border:1px solid #6a3a8a}
-.section-cancel .section-header{background:#222;color:#888;border:1px solid #444}
-.section-repeat .section-header{background:#3a2500;color:#ffe4b0;border:1px solid #8a5500}
+  /* URGENT */
+  #urgent-section{background:#2a0808;border-left:4px solid #f44}
+  #urgent-section .section-title{color:#f66}
 
-/* CARDS GRID */
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px;padding:10px;border:1px solid #333;border-top:none;border-radius:0 0 6px 6px;background:#161616}
+  /* ZIP sections */
+  #zip-62711{border-left:4px solid #2563eb}
+  #zip-62711 .section-title{color:#60a5fa}
+  #zip-62704{border-left:4px solid #16a34a}
+  #zip-62704 .section-title{color:#4ade80}
+  #zip-62677{border-left:4px solid #d97706}
+  #zip-62677 .section-title{color:#fbbf24}
+  #zip-other{border-left:4px solid #7c3aed}
+  #zip-other .section-title{color:#c084fc}
+  #cancellations{background:#181818;border-left:4px solid #444}
+  #cancellations .section-title{color:#666}
 
-.section-urgent .cards{border-color:#7b1515}
-.section-62711 .cards{border-color:#2a6d9e}
-.section-62704 .cards{border-color:#2a7a3a}
-.section-62677 .cards{border-color:#8a7800}
-.section-other .cards{border-color:#6a3a8a}
-.section-cancel .cards{border-color:#444}
-.section-repeat .cards{border-color:#8a5500}
+  /* CARDS */
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+  .card{background:#1e1e1e;border-radius:10px;padding:12px;border:1px solid #2a2a2a;position:relative}
+  .card.urgent-card{background:#2e0c0c;border-color:#6b2020}
+  .card.cancel-card{background:#161616;border-color:#2a2a2a;opacity:.75}
+  .card .name{font-weight:700;font-size:15px;color:#fff;margin-bottom:4px}
+  .card .phone{font-size:13px;color:#6af;margin-bottom:6px}
+  .card .phone a{color:#6af}
+  .card .addr{font-size:12px;color:#aaa;margin-bottom:4px}
+  .card .meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+  .badge{display:inline-block;font-size:11px;font-weight:600;padding:2px 7px;border-radius:12px;background:#2a2a2a;color:#bbb}
+  .badge.water{background:#0e2a4a;color:#60a5fa}
+  .badge.other{background:#1a1a2e;color:#c084fc}
+  .badge.owner-yes{background:#0a2a12;color:#4ade80}
+  .badge.owner-no{background:#2a1a0a;color:#f9a}
+  .badge.calls-1{background:#1a2a1a;color:#6ef}
+  .badge.calls-2{background:#2a2a0a;color:#fbbf24}
+  .badge.calls-3{background:#3a0a0a;color:#f66}
+  .badge.calls-4{background:#4a0000;color:#f44}
+  .card .desc{font-size:12px;color:#999;line-height:1.5;margin-bottom:8px;font-style:italic}
+  .card select{width:100%;padding:5px 8px;border-radius:6px;border:1px solid #333;background:#111;color:#e8e8e8;font-size:12px;cursor:pointer}
+  .card select:focus{outline:none;border-color:#555}
+  .card .cancel-note{font-size:12px;color:#666;font-style:italic;margin-top:4px}
+  .call-count-banner{position:absolute;top:10px;right:10px;font-size:11px;font-weight:700;background:#f44;color:#fff;border-radius:20px;padding:2px 8px}
+  .call-count-banner.two{background:#d97706}
 
-/* CARD */
-.card{background:#1e1e2e;border-radius:6px;padding:10px 12px;border-left:3px solid #555;position:relative}
-.card.status-new{border-left-color:#7ec8f7}
-.card.status-called{border-left-color:#f5a623}
-.card.status-contacted{border-left-color:#b4e869}
-.card.status-scheduled{border-left-color:#4cd964}
-.card.status-dispatched{border-left-color:#00c2ff}
-.card.status-inprogress{border-left-color:#ff9f00}
-.card.status-complete{border-left-color:#555}
-.card.status-cancelled{border-left-color:#333;opacity:.6}
+  /* DIVIDER */
+  .divider{height:1px;background:#222;margin:0 16px}
 
-.card-name{font-weight:700;font-size:15px;color:#fff;margin-bottom:2px}
-.card-name .call-count{font-size:11px;font-weight:400;color:#f5a623;margin-left:4px}
-.card-phone{font-size:12px;color:#888;margin-bottom:5px}
-.card-address{font-size:12px;color:#ccc;margin-bottom:4px}
-.card-type{display:inline-block;font-size:10px;font-weight:600;text-transform:uppercase;padding:1px 6px;border-radius:3px;background:#2a2a3a;color:#aaa;margin-bottom:5px}
-.card-type.water{background:#0d2f4a;color:#7ec8f7}
-.card-type.allelse{background:#2a2a3a;color:#aaa}
-.card-desc{font-size:12px;color:#b0b0b0;line-height:1.4;margin-bottom:6px;font-style:italic}
-.card-owner{font-size:11px;color:#666;margin-bottom:6px}
-.card-time{font-size:10px;color:#555;position:absolute;top:10px;right:10px}
-
-.card select{width:100%;padding:4px 6px;background:#0d0d1a;color:#e0e0e0;border:1px solid #444;border-radius:4px;font-size:12px;cursor:pointer}
-.card select:focus{outline:none;border-color:#7ec8f7}
-
-.cancel-reason{font-size:12px;color:#666;margin-bottom:4px;font-style:italic}
-
-/* RESPONSIVE */
-@media(max-width:480px){
-  .cards{grid-template-columns:1fr}
-  .stats{gap:10px}
-  .stat .val{font-size:18px}
-}
+  /* RESPONSIVE */
+  @media(max-width:480px){
+    .cards{grid-template-columns:1fr}
+    #stats{gap:6px}
+    .stat{min-width:60px;padding:6px 10px}
+    .stat .num{font-size:18px}
+  }
 </style>
 </head>
 <body>
 
-<header>
+<!-- HEADER -->
+<div id="header">
   <h1>🚨 Peerless Restoration — Dispatch Board</h1>
-  <div class="timestamp">Updated: Mon Jun 16 2026 · <span id="clock"></span></div>
-</header>
-
-<div class="stats">
-  <div class="stat total"><span class="val">50</span><span class="lbl">Emails</span></div>
-  <div class="stat total"><span class="val">38</span><span class="lbl">Unique</span></div>
-  <div class="stat urgent"><span class="val">3</span><span class="lbl">URGENT</span></div>
-  <div class="stat repeat"><span class="val">1</span><span class="lbl">Repeat</span></div>
-  <div class="stat active"><span class="val">30</span><span class="lbl">New</span></div>
-  <div class="stat cancel"><span class="val">4</span><span class="lbl">Cancelled</span></div>
+  <div class="ts">Updated: <span id="ts"></span></div>
 </div>
 
-<!-- URGENT -->
-<div class="section section-urgent">
-  <div class="section-header">🔴 URGENT — 3+ Calls <span class="badge">3 jobs</span></div>
-  <div class="cards" id="cards-urgent">
-    <!-- Mike Duke -->
-    <div class="card" id="card-2178166835" data-phone="2178166835">
-      <span class="card-time">Jun 14 08:47 AM</span>
-      <div class="card-name">Mike Duke <span class="call-count">📞 3 calls</span></div>
-      <div class="card-phone">217-816-6835</div>
-      <div class="card-address">4008 Surry Place Lane, Springfield 62711</div>
-      <div><span class="card-type water">Water Damage</span></div>
-      <div class="card-owner">Owner: Yes</div>
-      <div class="card-desc">"He called Thursday, Friday, Saturday, and today. Please call him back"</div>
-      <select onchange="saveStatus('2178166835',this.value)">
-        <option value="new">New</option>
-        <option value="called">Called-No Answer</option>
-        <option value="contacted">Contacted</option>
-        <option value="scheduled">Scheduled</option>
-        <option value="dispatched">Crew Dispatched</option>
-        <option value="inprogress">In Progress</option>
-        <option value="complete">Complete</option>
-        <option value="cancelled">Cancelled</option>
-      </select>
+<!-- STATS -->
+<div id="stats">
+  <div class="stat red"><div class="num">3</div><div class="lbl">URGENT</div></div>
+  <div class="stat orange"><div class="num">1</div><div class="lbl">Repeat</div></div>
+  <div class="stat blue"><div class="num">30</div><div class="lbl">New Leads</div></div>
+  <div class="stat gray"><div class="num">4</div><div class="lbl">Cancelled</div></div>
+  <div class="stat"><div class="num">38</div><div class="lbl">Unique Jobs</div></div>
+  <div class="stat"><div class="num">50</div><div class="lbl">Emails Read</div></div>
+</div>
+
+<!-- ===================== URGENT ===================== -->
+<div class="section" id="urgent-section">
+  <div class="section-title">🔴 URGENT — 3+ Calls</div>
+  <div class="cards">
+
+    <!-- Pat Oconnor — 4 calls -->
+    <div class="card urgent-card">
+      <div class="call-count-banner">4 CALLS</div>
+      <div class="name">Pat Oconnor</div>
+      <div class="phone"><a href="tel:+12176381729">+1 217-638-1729</a></div>
+      <div class="addr">28009 Rainer Drive, Springfield, IL 62704</div>
+      <div class="meta">
+        <span class="badge water">Water Damage</span>
+        <span class="badge owner-no">Not Owner (father-in-law)</span>
+        <span class="badge calls-4">4 calls</span>
+      </div>
+      <div class="desc">Basement water damage — waiting for evaluation. Repeat caller, nobody has shown up.</div>
+      <select onchange="saveStatus('2176381729',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
-    <!-- Pat Oconnor -->
-    <div class="card" id="card-2176381729" data-phone="2176381729">
-      <span class="card-time">Jun 14 09:52 AM</span>
-      <div class="card-name">Pat Oconnor <span class="call-count">📞 4 calls</span></div>
-      <div class="card-phone">217-638-1729</div>
-      <div class="card-address">28009 Rainer Drive, Springfield 62704</div>
-      <div><span class="card-type water">Water Damage</span></div>
-      <div class="card-owner">Owner: No</div>
-      <div class="card-desc">"Caller reached out previously and didn't hear back"</div>
-      <select onchange="saveStatus('2176381729',this.value)">
-        <option value="new">New</option>
-        <option value="called">Called-No Answer</option>
-        <option value="contacted">Contacted</option>
-        <option value="scheduled">Scheduled</option>
-        <option value="dispatched">Crew Dispatched</option>
-        <option value="inprogress">In Progress</option>
-        <option value="complete">Complete</option>
-        <option value="cancelled">Cancelled</option>
-      </select>
+
+    <!-- Mike Duke — 3 calls -->
+    <div class="card urgent-card">
+      <div class="call-count-banner">3 CALLS</div>
+      <div class="name">Mike Duke</div>
+      <div class="phone"><a href="tel:+12178166835">+1 217-816-6835</a></div>
+      <div class="addr">4008 Surry Place Lane, Springfield, IL 62711</div>
+      <div class="meta">
+        <span class="badge water">Water Damage</span>
+        <span class="badge owner-yes">Owner</span>
+        <span class="badge calls-3">3 calls</span>
+      </div>
+      <div class="desc">Called Thu, Fri, Sat, Mon — nobody showed up. Very frustrated, needs immediate response.</div>
+      <select onchange="saveStatus('2178166835',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
-    <!-- Cody Trigg -->
-    <div class="card" id="card-2174161887" data-phone="2174161887">
-      <span class="card-time">Jun 13 03:43 PM</span>
-      <div class="card-name">Cody Trigg <span class="call-count">📞 3 calls</span></div>
-      <div class="card-phone">217-416-1887</div>
-      <div class="card-address">4600 Pearson St, Springfield 62711</div>
-      <div><span class="card-type water">Water Damage</span></div>
-      <div class="card-owner">Owner: Yes</div>
-      <div class="card-desc">"Awaiting a callback for their service request yesterday"</div>
-      <select onchange="saveStatus('2174161887',this.value)">
-        <option value="new">New</option>
-        <option value="called">Called-No Answer</option>
-        <option value="contacted">Contacted</option>
-        <option value="scheduled">Scheduled</option>
-        <option value="dispatched">Crew Dispatched</option>
-        <option value="inprogress">In Progress</option>
-        <option value="complete">Complete</option>
-        <option value="cancelled">Cancelled</option>
-      </select>
+
+    <!-- Cody Trigg — 3 calls -->
+    <div class="card urgent-card">
+      <div class="call-count-banner">3 CALLS</div>
+      <div class="name">Cody Trigg</div>
+      <div class="phone"><a href="tel:+12174161887">+1 217-416-1887</a></div>
+      <div class="addr">4600 Pearson St, Springfield, IL 62711</div>
+      <div class="meta">
+        <span class="badge water">Water Damage</span>
+        <span class="badge owner-yes">Owner</span>
+        <span class="badge calls-3">3 calls</span>
+      </div>
+      <div class="desc">Awaiting callback and service. Has called 3 times with no response received.</div>
+      <select onchange="saveStatus('2174161887',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
+
   </div>
 </div>
 
-<!-- REPEAT -->
-<div class="section section-repeat">
-  <div class="section-header">🟠 Repeat Callers — 2 Calls <span class="badge">1 job</span></div>
+<div class="divider"></div>
+
+<!-- ===================== REPEAT ===================== -->
+<div class="section" id="repeat-section" style="border-left:4px solid #d97706">
+  <div class="section-title" style="color:#fbbf24">🟠 REPEAT — 2 Calls</div>
   <div class="cards">
-    <!-- Sammy Needham -->
-    <div class="card" id="card-2176229032" data-phone="2176229032">
-      <span class="card-time">Jun 14 08:22 AM</span>
-      <div class="card-name">Sammy Needham <span class="call-count">📞 2 calls</span></div>
-      <div class="card-phone">217-622-9032</div>
-      <div class="card-address">2809 Rayner Drive, Jerome 62704</div>
-      <div><span class="card-type water">Water Damage</span></div>
-      <div class="card-owner">Owner: Yes</div>
-      <div class="card-desc">"Storm damage, called yesterday"</div>
-      <select onchange="saveStatus('2176229032',this.value)">
-        <option value="new">New</option>
-        <option value="called">Called-No Answer</option>
-        <option value="contacted">Contacted</option>
-        <option value="scheduled">Scheduled</option>
-        <option value="dispatched">Crew Dispatched</option>
-        <option value="inprogress">In Progress</option>
-        <option value="complete">Complete</option>
-        <option value="cancelled">Cancelled</option>
-      </select>
+
+    <!-- Sammy Needham — 2 calls -->
+    <div class="card">
+      <div class="call-count-banner two">2 CALLS</div>
+      <div class="name">Sammy Needham</div>
+      <div class="phone"><a href="tel:+12176229032">+1 217-622-9032</a></div>
+      <div class="addr">2809 Rayner Drive, Jerome, IL 62704</div>
+      <div class="meta">
+        <span class="badge water">Water Damage</span>
+        <span class="badge owner-yes">Owner</span>
+        <span class="badge calls-2">2 calls</span>
+      </div>
+      <div class="desc">Storm water damage — no callback received yet. Called twice.</div>
+      <select onchange="saveStatus('2176229032',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
+
   </div>
 </div>
 
-<!-- ZIP 62711 -->
-<div class="section section-62711">
-  <div class="section-header">🔵 ZIP 62711 — Springfield (West) <span class="badge">16 jobs</span></div>
+<div class="divider"></div>
+
+<!-- ===================== ZIP 62711 (BLUE) ===================== -->
+<div class="section" id="zip-62711">
+  <div class="section-title">🔵 ZIP 62711 — Springfield West</div>
   <div class="cards">
-    <!-- Kelly Hurst -->
-    <div class="card" id="card-2173417483" data-phone="2173417483">
-      <span class="card-time">Jun 15 06:56 AM</span>
-      <div class="card-name">Kelly Hurst</div>
-      <div class="card-phone">217-341-7483</div>
-      <div class="card-address">4661 Barrington Dr, Springfield 62711</div>
-      <div><span class="card-type water">Water Damage</span></div>
-      <div class="card-owner">Owner: Yes</div>
-      <div class="card-desc">"Calling to get assistance with water damage. Please reach back."</div>
-      <select onchange="saveStatus('2173417483',this.value)">
-        <option value="new">New</option><option value="called">Called-No Answer</option><option value="contacted">Contacted</option><option value="scheduled">Scheduled</option><option value="dispatched">Crew Dispatched</option><option value="inprogress">In Progress</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option>
-      </select>
+
+    <div class="card">
+      <div class="name">Kelly Hurst</div>
+      <div class="phone"><a href="tel:+12173417483">+1 217-341-7483</a></div>
+      <div class="addr">4661 Barrington Dr, Springfield, IL 62711</div>
+      <div class="meta"><span class="badge water">Water Damage</span><span class="badge owner-yes">Owner</span><span class="badge calls-1">1 call</span></div>
+      <div class="desc">Calling to get assistance with water damage.</div>
+      <select onchange="saveStatus('2173417483',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
-    <!-- Billie Berghold -->
-    <div class="card" id="card-2174141965" data-phone="2174141965">
-      <span class="card-time">Jun 15 12:21 AM</span>
-      <div class="card-name">Billie Berghold</div>
-      <div class="card-phone">217-414-1965</div>
-      <div class="card-address">2309 Knoxville, Springfield 62711</div>
-      <div><span class="card-type water">Water Damage</span></div>
-      <div class="card-owner">Owner: Yes</div>
-      <div class="card-desc">"Water damage in basement, carpet padding soaked. ServePro came out but no estimate yet. Wants to know if we work with State Farm."</div>
-      <select onchange="saveStatus('2174141965',this.value)">
-        <option value="new">New</option><option value="called">Called-No Answer</option><option value="contacted">Contacted</option><option value="scheduled">Scheduled</option><option value="dispatched">Crew Dispatched</option><option value="inprogress">In Progress</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option>
-      </select>
+
+    <div class="card">
+      <div class="name">Billie Berghold</div>
+      <div class="phone"><a href="tel:+12174141965">+1 217-414-1965</a></div>
+      <div class="addr">2309 Knoxville, Springfield, IL 62711</div>
+      <div class="meta"><span class="badge water">Water Damage</span><span class="badge owner-yes">Owner</span><span class="badge calls-1">1 call</span></div>
+      <div class="desc">Carpet padding soaked; had issues with ServPro, seeking alternative.</div>
+      <select onchange="saveStatus('2174141965',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
-    <!-- Brian Collins -->
-    <div class="card" id="card-2178161775" data-phone="2178161775">
-      <span class="card-time">Jun 14 02:06 PM</span>
-      <div class="card-name">Brian Collins</div>
-      <div class="card-phone">217-816-1775</div>
-      <div class="card-address">2005 Monterey Drive, Springfield 62711</div>
-      <div><span class="card-type water">Water Damage</span></div>
-      <div class="card-owner">Owner: Yes</div>
-      <div class="card-desc">"Power loss overnight, water damage needs to be dried out"</div>
-      <select onchange="saveStatus('2178161775',this.value)">
-        <option value="new">New</option><option value="called">Called-No Answer</option><option value="contacted">Contacted</option><option value="scheduled">Scheduled</option><option value="dispatched">Crew Dispatched</option><option value="inprogress">In Progress</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option>
-      </select>
+
+    <div class="card">
+      <div class="name">Brian Collins</div>
+      <div class="phone"><a href="tel:+12178161775">+1 217-816-1775</a></div>
+      <div class="addr">2005 Monterey Drive, Springfield, IL 62711</div>
+      <div class="meta"><span class="badge water">Water Damage</span><span class="badge owner-yes">Owner</span><span class="badge calls-1">1 call</span></div>
+      <div class="desc">Power loss overnight caused water damage; needs assessment.</div>
+      <select onchange="saveStatus('2178161775',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
-    <!-- Neil Polomas -->
-    <div class="card" id="card-2177252145" data-phone="2177252145">
-      <span class="card-time">Jun 13 08:06 PM</span>
-      <div class="card-name">Neil Polomas</div>
-      <div class="card-phone">217-725-2145</div>
-      <div class="card-address">2400 Asheville Drive, Springfield 62711</div>
-      <div><span class="card-type water">Water Damage</span></div>
-      <div class="card-owner">Owner: Yes</div>
-      <div class="card-desc">"Backup in basement, smaller area needs extraction"</div>
-      <select onchange="saveStatus('2177252145',this.value)">
-        <option value="new">New</option><option value="called">Called-No Answer</option><option value="contacted">Contacted</option><option value="scheduled">Scheduled</option><option value="dispatched">Crew Dispatched</option><option value="inprogress">In Progress</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option>
-      </select>
+
+    <div class="card">
+      <div class="name">Neil Polomas</div>
+      <div class="phone"><a href="tel:+12177252145">+1 217-725-2145</a></div>
+      <div class="addr">2400 Asheville Drive, Springfield, IL 62711</div>
+      <div class="meta"><span class="badge water">Water Damage</span><span class="badge owner-yes">Owner</span><span class="badge calls-1">1 call</span></div>
+      <div class="desc">Basement backup — needs water extraction.</div>
+      <select onchange="saveStatus('2177252145',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
-    <!-- Kurt Davis -->
-    <div class="card" id="card-3143412378" data-phone="3143412378">
-      <span class="card-time">Jun 13 05:00 PM</span>
-      <div class="card-name">Kurt Davis</div>
-      <div class="card-phone">314-341-2378</div>
-      <div class="card-address">5308 Jaeger Drive, Springfield 62711</div>
-      <div><span class="card-type water">Water Damage</span></div>
-      <div class="card-owner">Owner: Yes</div>
-      <div class="card-desc">"Water backup into basement during power outage"</div>
-      <select onchange="saveStatus('3143412378',this.value)">
-        <option value="new">New</option><option value="called">Called-No Answer</option><option value="contacted">Contacted</option><option value="scheduled">Scheduled</option><option value="dispatched">Crew Dispatched</option><option value="inprogress">In Progress</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option>
-      </select>
+
+    <div class="card">
+      <div class="name">Kurt Davis</div>
+      <div class="phone"><a href="tel:+13143412378">+1 314-341-2378</a></div>
+      <div class="addr">5308 Jaeger Drive, Springfield, IL 62711</div>
+      <div class="meta"><span class="badge water">Water Damage</span><span class="badge owner-yes">Owner</span><span class="badge calls-1">1 call</span></div>
+      <div class="desc">Power outage, basement backup from sump failure.</div>
+      <select onchange="saveStatus('3143412378',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
-    <!-- Dave Chapman -->
-    <div class="card" id="card-2178360211" data-phone="2178360211">
-      <span class="card-time">Jun 13 04:52 PM</span>
-      <div class="card-name">Dave Chapman</div>
-      <div class="card-phone">217-836-0211</div>
-      <div class="card-address">4004 Old Mill Lane, Springfield 62711</div>
-      <div><span class="card-type water">Water Damage</span></div>
-      <div class="card-owner">Owner: Yes</div>
-      <div class="card-desc">"Looking to find out the best disinfectant product for standing water for wet drywall"</div>
-      <select onchange="saveStatus('2178360211',this.value)">
-        <option value="new">New</option><option value="called">Called-No Answer</option><option value="contacted">Contacted</option><option value="scheduled">Scheduled</option><option value="dispatched">Crew Dispatched</option><option value="inprogress">In Progress</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option>
-      </select>
+
+    <div class="card">
+      <div class="name">Dave Chapman</div>
+      <div class="phone"><a href="tel:+12178360211">+1 217-836-0211</a></div>
+      <div class="addr">4004 Old Mill Lane, Springfield, IL 62711</div>
+      <div class="meta"><span class="badge water">Water Damage</span><span class="badge owner-yes">Owner</span><span class="badge calls-1">1 call</span></div>
+      <div class="desc">Disinfectant needed for standing water.</div>
+      <select onchange="saveStatus('2178360211',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
-    <!-- Jodi Grant -->
-    <div class="card" id="card-2177253922" data-phone="2177253922">
-      <span class="card-time">Jun 13 04:22 PM</span>
-      <div class="card-name">Jodi Grant</div>
-      <div class="card-phone">217-725-3922</div>
-      <div class="card-address">2109 Burgess Drive, Springfield 62711</div>
-      <div><span class="card-type water">Water Damage</span></div>
-      <div class="card-owner">Owner: Yes</div>
-      <div class="card-desc">"Basement flooded, drywall wet, need padding up and everything dry"</div>
-      <select onchange="saveStatus('2177253922',this.value)">
-        <option value="new">New</option><option value="called">Called-No Answer</option><option value="contacted">Contacted</option><option value="scheduled">Scheduled</option><option value="dispatched">Crew Dispatched</option><option value="inprogress">In Progress</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option>
-      </select>
+
+    <div class="card">
+      <div class="name">Jodi Grant</div>
+      <div class="phone"><a href="tel:+12177253922">+1 217-725-3922</a></div>
+      <div class="addr">2109 Burgess Drive, Springfield, IL 62711</div>
+      <div class="meta"><span class="badge water">Water Damage</span><span class="badge owner-yes">Owner</span><span class="badge calls-1">1 call</span></div>
+      <div class="desc">Flooded basement, wet drywall — needs full assessment.</div>
+      <select onchange="saveStatus('2177253922',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
-    <!-- Rick Soehnlin -->
-    <div class="card" id="card-2178010673" data-phone="2178010673">
-      <span class="card-time">Jun 13 04:01 PM</span>
-      <div class="card-name">Rick Soehnlin</div>
-      <div class="card-phone">217-801-0673</div>
-      <div class="card-address">210 Gray Court, Springfield 62711</div>
-      <div><span class="card-type water">Water Damage</span></div>
-      <div class="card-owner">Owner: Yes</div>
-      <div class="card-desc">"Water damage in basement due to power outage and sump pumps not working"</div>
-      <select onchange="saveStatus('2178010673',this.value)">
-        <option value="new">New</option><option value="called">Called-No Answer</option><option value="contacted">Contacted</option><option value="scheduled">Scheduled</option><option value="dispatched">Crew Dispatched</option><option value="inprogress">In Progress</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option>
-      </select>
+
+    <div class="card">
+      <div class="name">Rick Soehnlin</div>
+      <div class="phone"><a href="tel:+12178010673">+1 217-801-0673</a></div>
+      <div class="addr">210 Gray Court, Springfield, IL 62711</div>
+      <div class="meta"><span class="badge water">Water Damage</span><span class="badge owner-yes">Owner</span><span class="badge calls-1">1 call</span></div>
+      <div class="desc">Power outage, sump pump failed — water in basement.</div>
+      <select onchange="saveStatus('2178010673',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
-    <!-- Danielle Alstott -->
-    <div class="card" id="card-2176711900" data-phone="2176711900">
-      <span class="card-time">Jun 13 03:21 PM</span>
-      <div class="card-name">Danielle Alstott</div>
-      <div class="card-phone">217-671-1900</div>
-      <div class="card-address">2808 Whiteside Place, Springfield 62711</div>
-      <div><span class="card-type water">Water Damage</span></div>
-      <div class="card-owner">Owner: Yes</div>
-      <div class="card-desc">"Calling to see how soon someone can start if she decided to accept the quote"</div>
-      <select onchange="saveStatus('2176711900',this.value)">
-        <option value="new">New</option><option value="called">Called-No Answer</option><option value="contacted">Contacted</option><option value="scheduled">Scheduled</option><option value="dispatched">Crew Dispatched</option><option value="inprogress">In Progress</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option>
-      </select>
+
+    <div class="card">
+      <div class="name">Danielle Alstott</div>
+      <div class="phone"><a href="tel:+12176711900">+1 217-671-1900</a></div>
+      <div class="addr">2808 Whiteside Place, Springfield, IL 62711</div>
+      <div class="meta"><span class="badge water">Water Damage</span><span class="badge owner-yes">Owner</span><span class="badge calls-1">1 call</span></div>
+      <div class="desc">Asking about accepting quote for restoration work.</div>
+      <select onchange="saveStatus('2176711900',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
-    <!-- Anna Matula -->
-    <div class="card" id="card-2177415820" data-phone="2177415820">
-      <span class="card-time">Jun 13 02:03 PM</span>
-      <div class="card-name">Anna Matula</div>
-      <div class="card-phone">217-741-5820</div>
-      <div class="card-address">Turnstone Road, Springfield 62711</div>
-      <div><span class="card-type water">Water Damage</span></div>
-      <div class="card-owner">Owner: Yes</div>
-      <div class="card-desc">"People were supposed to be on her property for cleaning today and she is asking for the status"</div>
-      <select onchange="saveStatus('2177415820',this.value)">
-        <option value="new">New</option><option value="called">Called-No Answer</option><option value="contacted">Contacted</option><option value="scheduled">Scheduled</option><option value="dispatched">Crew Dispatched</option><option value="inprogress">In Progress</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option>
-      </select>
+
+    <div class="card">
+      <div class="name">Anna Matula</div>
+      <div class="phone"><a href="tel:+12177415820">+1 217-741-5820</a></div>
+      <div class="addr">Turnstone Road, Springfield, IL 62711</div>
+      <div class="meta"><span class="badge water">Water Damage</span><span class="badge owner-yes">Owner</span><span class="badge calls-1">1 call</span></div>
+      <div class="desc">Status check — following up on cleaning in progress.</div>
+      <select onchange="saveStatus('2177415820',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
-    <!-- Jane Rouland -->
-    <div class="card" id="card-2174156114" data-phone="2174156114">
-      <span class="card-time">Jun 13 11:45 AM</span>
-      <div class="card-name">Jane Rouland</div>
-      <div class="card-phone">217-415-6114</div>
-      <div class="card-address">3303 Lakemere Drive, Springfield 62711</div>
-      <div><span class="card-type water">Water Damage</span></div>
-      <div class="card-owner">Owner: Yes</div>
-      <div class="card-desc">"Just bought a home, sump pump pipe shifted causing a leak. Carpet wet, insulation wet."</div>
-      <select onchange="saveStatus('2174156114',this.value)">
-        <option value="new">New</option><option value="called">Called-No Answer</option><option value="contacted">Contacted</option><option value="scheduled">Scheduled</option><option value="dispatched">Crew Dispatched</option><option value="inprogress">In Progress</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option>
-      </select>
+
+    <div class="card">
+      <div class="name">Jane Rouland</div>
+      <div class="phone"><a href="tel:+12174156114">+1 217-415-6114</a></div>
+      <div class="addr">3303 Lakemere Drive, Springfield, IL 62711</div>
+      <div class="meta"><span class="badge water">Water Damage</span><span class="badge owner-yes">Owner</span><span class="badge calls-1">1 call</span></div>
+      <div class="desc">Sump pump pipe shifted — carpet and insulation wet.</div>
+      <select onchange="saveStatus('2174156114',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
-    <!-- Tom Sestak -->
-    <div class="card" id="card-2178168846" data-phone="2178168846">
-      <span class="card-time">Jun 13 11:09 AM</span>
-      <div class="card-name">Tom Sestak</div>
-      <div class="card-phone">217-816-8846</div>
-      <div class="card-address">2305 Gander Road, Springfield 62711</div>
-      <div><span class="card-type water">Water Damage</span></div>
-      <div class="card-owner">Owner: Yes</div>
-      <div class="card-desc">"Wants number changed to his (wife out of town), confirm appointment scheduled for Jun 13"</div>
-      <select onchange="saveStatus('2178168846',this.value)">
-        <option value="new">New</option><option value="called">Called-No Answer</option><option value="contacted">Contacted</option><option value="scheduled">Scheduled</option><option value="dispatched">Crew Dispatched</option><option value="inprogress">In Progress</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option>
-      </select>
+
+    <div class="card">
+      <div class="name">Tom Sestak</div>
+      <div class="phone"><a href="tel:+12178168846">+1 217-816-8846</a></div>
+      <div class="addr">2305 Gander Road, Springfield, IL 62711</div>
+      <div class="meta"><span class="badge water">Water Damage</span><span class="badge owner-yes">Owner</span><span class="badge calls-1">1 call</span></div>
+      <div class="desc">Calling to confirm appointment time.</div>
+      <select onchange="saveStatus('2178168846',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
-    <!-- Leslie Frederick -->
-    <div class="card" id="card-2178364810" data-phone="2178364810">
-      <span class="card-time">Jun 13 10:05 AM</span>
-      <div class="card-name">Leslie Frederick</div>
-      <div class="card-phone">217-836-4810</div>
-      <div class="card-address">2808 Covered Wagon Trail, Springfield 62711</div>
-      <div><span class="card-type water">Water Damage</span></div>
-      <div class="card-owner">Owner: Yes</div>
-      <div class="card-desc">"URGENT — Water in basement, sump pump working fine. Needs appointment ASAP to have water removed."</div>
-      <select onchange="saveStatus('2178364810',this.value)">
-        <option value="new">New</option><option value="called">Called-No Answer</option><option value="contacted">Contacted</option><option value="scheduled">Scheduled</option><option value="dispatched">Crew Dispatched</option><option value="inprogress">In Progress</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option>
-      </select>
+
+    <div class="card">
+      <div class="name">Leslie Frederick</div>
+      <div class="phone"><a href="tel:+12178364810">+1 217-836-4810</a></div>
+      <div class="addr">2808 Covered Wagon Trail, Springfield, IL 62711</div>
+      <div class="meta"><span class="badge water">Water Damage</span><span class="badge owner-yes">Owner</span><span class="badge calls-1">1 call</span></div>
+      <div class="desc">⚠️ URGENT — water in basement, sump pump working fine but flooding continues.</div>
+      <select onchange="saveStatus('2178364810',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
-    <!-- Kelly Hope -->
-    <div class="card" id="card-2172029746" data-phone="2172029746">
-      <span class="card-time">Jun 12 06:07 PM</span>
-      <div class="card-name">Kelly Hope</div>
-      <div class="card-phone">217-202-9746</div>
-      <div class="card-address">2016 Clarion Drive, Springfield 62711</div>
-      <div><span class="card-type water">Water Damage</span></div>
-      <div class="card-owner">Owner: Yes</div>
-      <div class="card-desc">"Basement flooded, would like someone to come out. Will be an insurance claim."</div>
-      <select onchange="saveStatus('2172029746',this.value)">
-        <option value="new">New</option><option value="called">Called-No Answer</option><option value="contacted">Contacted</option><option value="scheduled">Scheduled</option><option value="dispatched">Crew Dispatched</option><option value="inprogress">In Progress</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option>
-      </select>
+
+    <div class="card">
+      <div class="name">Kelly Hope</div>
+      <div class="phone"><a href="tel:+12172029746">+1 217-202-9746</a></div>
+      <div class="addr">2016 Clarion Drive, Springfield, IL 62711</div>
+      <div class="meta"><span class="badge water">Water Damage</span><span class="badge owner-yes">Owner</span><span class="badge calls-1">1 call</span></div>
+      <div class="desc">Flooded basement — has insurance claim in progress.</div>
+      <select onchange="saveStatus('2172029746',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
-    <!-- Angelica Salazar -->
-    <div class="card" id="card-2175029752" data-phone="2175029752">
-      <span class="card-time">Jun 12 05:41 PM</span>
-      <div class="card-name">Angelica Salazar</div>
-      <div class="card-phone">217-502-9752</div>
-      <div class="card-address">1509 Old Ivy Dr, Springfield 62711</div>
-      <div><span class="card-type water">Water Damage</span></div>
-      <div class="card-owner">Owner: Yes</div>
-      <div class="card-desc">"Returning a missed call from Jackie about scheduling"</div>
-      <select onchange="saveStatus('2175029752',this.value)">
-        <option value="new">New</option><option value="called">Called-No Answer</option><option value="contacted">Contacted</option><option value="scheduled">Scheduled</option><option value="dispatched">Crew Dispatched</option><option value="inprogress">In Progress</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option>
-      </select>
+
+    <div class="card">
+      <div class="name">Angelica Salazar</div>
+      <div class="phone"><a href="tel:+12175029752">+1 217-502-9752</a></div>
+      <div class="addr">1509 Old Ivy Dr, Springfield, IL 62711</div>
+      <div class="meta"><span class="badge water">Water Damage</span><span class="badge owner-yes">Owner</span><span class="badge calls-1">1 call</span></div>
+      <div class="desc">Return call requested — needs scheduling.</div>
+      <select onchange="saveStatus('2175029752',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
-    <!-- Mark Ryan -->
-    <div class="card" id="card-2177254138" data-phone="2177254138">
-      <span class="card-time">Jun 12 05:41 PM</span>
-      <div class="card-name">Mark Ryan</div>
-      <div class="card-phone">217-725-4138</div>
-      <div class="card-address">2700 Drening Place, Springfield 62711</div>
-      <div><span class="card-type water">Water Damage</span></div>
-      <div class="card-owner">Owner: Yes</div>
-      <div class="card-desc">"Small basement has water damage"</div>
-      <select onchange="saveStatus('2177254138',this.value)">
-        <option value="new">New</option><option value="called">Called-No Answer</option><option value="contacted">Contacted</option><option value="scheduled">Scheduled</option><option value="dispatched">Crew Dispatched</option><option value="inprogress">In Progress</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option>
-      </select>
+
+    <div class="card">
+      <div class="name">Mark Ryan</div>
+      <div class="phone"><a href="tel:+12177254138">+1 217-725-4138</a></div>
+      <div class="addr">2700 Drening Place, Springfield, IL 62711</div>
+      <div class="meta"><span class="badge water">Water Damage</span><span class="badge owner-yes">Owner</span><span class="badge calls-1">1 call</span></div>
+      <div class="desc">Small basement water damage — needs assessment.</div>
+      <select onchange="saveStatus('2177254138',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
+
   </div>
 </div>
 
-<!-- ZIP 62704 -->
-<div class="section section-62704">
-  <div class="section-header">🟢 ZIP 62704 — Springfield (East/Central) <span class="badge">7 jobs</span></div>
+<div class="divider"></div>
+
+<!-- ===================== ZIP 62704 (GREEN) ===================== -->
+<div class="section" id="zip-62704">
+  <div class="section-title">🟢 ZIP 62704 — Springfield South/East</div>
   <div class="cards">
-    <!-- Kalpana Desai -->
-    <div class="card" id="card-2178990830" data-phone="2178990830">
-      <span class="card-time">Jun 15 06:11 AM</span>
-      <div class="card-name">Kalpana Desai</div>
-      <div class="card-phone">217-899-0830</div>
-      <div class="card-address">212 Astoria Road, Springfield 62704</div>
-      <div><span class="card-type water">Water Damage</span></div>
-      <div class="card-owner">Owner: Yes</div>
-      <div class="card-desc">"Called Friday about basement flood — smell starting to come upstairs — 3 days, no callback. Claim# 7010298024"</div>
-      <select onchange="saveStatus('2178990830',this.value)">
-        <option value="new">New</option><option value="called">Called-No Answer</option><option value="contacted">Contacted</option><option value="scheduled">Scheduled</option><option value="dispatched">Crew Dispatched</option><option value="inprogress">In Progress</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option>
-      </select>
+
+    <div class="card">
+      <div class="name">Kalpana Desai</div>
+      <div class="phone"><a href="tel:+12178990830">+1 217-899-0830</a></div>
+      <div class="addr">212 Astoria Road, Springfield, IL 62704</div>
+      <div class="meta"><span class="badge water">Water Damage</span><span class="badge owner-yes">Owner</span><span class="badge calls-1">1 call</span></div>
+      <div class="desc">Flooded basement 3+ days, smell coming upstairs. Claim #7010298024.</div>
+      <select onchange="saveStatus('2178990830',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
-    <!-- Patrick Quigley -->
-    <div class="card" id="card-2174140414" data-phone="2174140414">
-      <span class="card-time">Jun 13 05:38 PM</span>
-      <div class="card-name">Patrick Quigley</div>
-      <div class="card-phone">217-414-0414</div>
-      <div class="card-address">2305 Amber Court, Springfield 62704</div>
-      <div><span class="card-type water">Water Damage</span></div>
-      <div class="card-owner">Owner: Yes</div>
-      <div class="card-desc">"Caller wanted someone to contact him today as it is urgent"</div>
-      <select onchange="saveStatus('2174140414',this.value)">
-        <option value="new">New</option><option value="called">Called-No Answer</option><option value="contacted">Contacted</option><option value="scheduled">Scheduled</option><option value="dispatched">Crew Dispatched</option><option value="inprogress">In Progress</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option>
-      </select>
+
+    <div class="card">
+      <div class="name">Patrick Quigley</div>
+      <div class="phone"><a href="tel:+12174140414">+1 217-414-0414</a></div>
+      <div class="addr">2305 Amber Court, Springfield, IL 62704</div>
+      <div class="meta"><span class="badge water">Water Damage</span><span class="badge owner-yes">Owner</span><span class="badge calls-1">1 call</span></div>
+      <div class="desc">Requesting urgent callback.</div>
+      <select onchange="saveStatus('2174140414',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
-    <!-- Jon Launer -->
-    <div class="card" id="card-8085428476" data-phone="8085428476">
-      <span class="card-time">Jun 13 05:28 PM</span>
-      <div class="card-name">Jon Launer</div>
-      <div class="card-phone">808-542-8476</div>
-      <div class="card-address">112 Norwalk Road, Springfield 62704</div>
-      <div><span class="card-type water">Water Damage</span></div>
-      <div class="card-owner">Owner: Yes</div>
-      <div class="card-desc">"Flooded by the recent storm"</div>
-      <select onchange="saveStatus('8085428476',this.value)">
-        <option value="new">New</option><option value="called">Called-No Answer</option><option value="contacted">Contacted</option><option value="scheduled">Scheduled</option><option value="dispatched">Crew Dispatched</option><option value="inprogress">In Progress</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option>
-      </select>
+
+    <div class="card">
+      <div class="name">Megan Forness</div>
+      <div class="phone"><a href="tel:+12177203433">+1 217-720-3433</a></div>
+      <div class="addr">119 Calvin Avenue, Springfield, IL 62704</div>
+      <div class="meta"><span class="badge water">Water Damage</span><span class="badge owner-yes">Owner</span><span class="badge calls-1">1 call</span></div>
+      <div class="desc">3 inches of standing water, battery backup sump failed.</div>
+      <select onchange="saveStatus('2177203433',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
-    <!-- Megan Forness -->
-    <div class="card" id="card-2177203433" data-phone="2177203433">
-      <span class="card-time">Jun 13 03:33 PM</span>
-      <div class="card-name">Megan Forness</div>
-      <div class="card-phone">217-720-3433</div>
-      <div class="card-address">119 Calvin Avenue, Springfield 62704</div>
-      <div><span class="card-type water">Water Damage</span></div>
-      <div class="card-owner">Owner: Yes</div>
-      <div class="card-desc">"Power went off, battery backup didn't work, three inches of water in whole basement, carpet and mold concern"</div>
-      <select onchange="saveStatus('2177203433',this.value)">
-        <option value="new">New</option><option value="called">Called-No Answer</option><option value="contacted">Contacted</option><option value="scheduled">Scheduled</option><option value="dispatched">Crew Dispatched</option><option value="inprogress">In Progress</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option>
-      </select>
+
+    <div class="card">
+      <div class="name">Jennifer Notariano</div>
+      <div class="phone"><a href="tel:+19855070166">+1 985-507-0166</a></div>
+      <div class="addr">1604 South Lowell Avenue, Springfield, IL 62704</div>
+      <div class="meta"><span class="badge water">Water Damage</span><span class="badge owner-yes">Owner</span><span class="badge calls-1">1 call</span></div>
+      <div class="desc">Water receding — calling about blowout restoration services.</div>
+      <select onchange="saveStatus('9855070166',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
-    <!-- Jennifer Notariano -->
-    <div class="card" id="card-9855070166" data-phone="9855070166">
-      <span class="card-time">Jun 13 12:00 PM</span>
-      <div class="card-name">Jennifer Notariano</div>
-      <div class="card-phone">985-507-0166</div>
-      <div class="card-address">1604 South Lowell Avenue, Springfield 62704</div>
-      <div><span class="card-type water">Water Damage</span></div>
-      <div class="card-owner">Owner: Yes</div>
-      <div class="card-desc">"Receding water in basement still wet — wants blowout restoration services"</div>
-      <select onchange="saveStatus('9855070166',this.value)">
-        <option value="new">New</option><option value="called">Called-No Answer</option><option value="contacted">Contacted</option><option value="scheduled">Scheduled</option><option value="dispatched">Crew Dispatched</option><option value="inprogress">In Progress</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option>
-      </select>
+
+    <div class="card">
+      <div class="name">Lisa Belz</div>
+      <div class="phone"><a href="tel:+12174156454">+1 217-415-6454</a></div>
+      <div class="addr">3125 La Conner Drive, Springfield, IL 62704</div>
+      <div class="meta"><span class="badge water">Water Damage</span><span class="badge owner-no">Not Owner (son's home)</span><span class="badge calls-1">1 call</span></div>
+      <div class="desc">Calling on behalf of son — water damage at his property.</div>
+      <select onchange="saveStatus('2174156454',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
-    <!-- Lisa Belz -->
-    <div class="card" id="card-2174156454" data-phone="2174156454">
-      <span class="card-time">Jun 13 09:26 AM</span>
-      <div class="card-name">Lisa Belz</div>
-      <div class="card-phone">217-415-6454</div>
-      <div class="card-address">3125 La Conner Drive, Springfield 62704</div>
-      <div><span class="card-type water">Water Damage</span></div>
-      <div class="card-owner">Owner: No (calling for son)</div>
-      <div class="card-desc">"URGENT — calling on behalf of her son who has water damage"</div>
-      <select onchange="saveStatus('2174156454',this.value)">
-        <option value="new">New</option><option value="called">Called-No Answer</option><option value="contacted">Contacted</option><option value="scheduled">Scheduled</option><option value="dispatched">Crew Dispatched</option><option value="inprogress">In Progress</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option>
-      </select>
+
+    <div class="card">
+      <div class="name">Jon Launer</div>
+      <div class="phone"><a href="tel:+18085428476">+1 808-542-8476</a></div>
+      <div class="addr">112 Norwalk Road, Springfield, IL 62704</div>
+      <div class="meta"><span class="badge water">Water Damage</span><span class="badge owner-yes">Owner</span><span class="badge calls-1">1 call</span></div>
+      <div class="desc">Property flooded by recent storm.</div>
+      <select onchange="saveStatus('8085428476',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
-    <!-- Courtney Niemann -->
-    <div class="card" id="card-9106206684" data-phone="9106206684">
-      <span class="card-time">Jun 12 07:15 PM</span>
-      <div class="card-name">Courtney Niemann</div>
-      <div class="card-phone">910-620-6684</div>
-      <div class="card-address">2505 Wydown Avenue, Springfield 62704</div>
-      <div><span class="card-type water">Water Damage</span></div>
-      <div class="card-owner">Owner: Yes</div>
-      <div class="card-desc">"Finished basement flooded"</div>
-      <select onchange="saveStatus('9106206684',this.value)">
-        <option value="new">New</option><option value="called">Called-No Answer</option><option value="contacted">Contacted</option><option value="scheduled">Scheduled</option><option value="dispatched">Crew Dispatched</option><option value="inprogress">In Progress</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option>
-      </select>
+
+    <div class="card">
+      <div class="name">Courtney Niemann</div>
+      <div class="phone"><a href="tel:+19106206684">+1 910-620-6684</a></div>
+      <div class="addr">2505 Wydown Avenue, Springfield, IL 62704</div>
+      <div class="meta"><span class="badge water">Water Damage</span><span class="badge owner-yes">Owner</span><span class="badge calls-1">1 call</span></div>
+      <div class="desc">Finished basement flooded — needs full restoration.</div>
+      <select onchange="saveStatus('9106206684',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
+
   </div>
 </div>
 
-<!-- ZIP 62677 -->
-<div class="section section-62677">
-  <div class="section-header">🟡 ZIP 62677 — Pleasant Plains <span class="badge">1 job</span></div>
+<div class="divider"></div>
+
+<!-- ===================== ZIP 62677 (YELLOW) ===================== -->
+<div class="section" id="zip-62677">
+  <div class="section-title">🟡 ZIP 62677 — Pleasant Plains Area</div>
   <div class="cards">
-    <!-- Courtney Putman -->
-    <div class="card" id="card-2174147190" data-phone="2174147190">
-      <span class="card-time">Jun 14 09:07 AM</span>
-      <div class="card-name">Courtney Putman</div>
-      <div class="card-phone">217-414-7190</div>
-      <div class="card-address">12220 Salisbury Road, Pleasant Plains 62677</div>
-      <div><span class="card-type water">Water Damage</span></div>
-      <div class="card-owner">Owner: Yes</div>
-      <div class="card-desc">"Water in the garage. Please follow up."</div>
-      <select onchange="saveStatus('2174147190',this.value)">
-        <option value="new">New</option><option value="called">Called-No Answer</option><option value="contacted">Contacted</option><option value="scheduled">Scheduled</option><option value="dispatched">Crew Dispatched</option><option value="inprogress">In Progress</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option>
-      </select>
+
+    <div class="card">
+      <div class="name">Courtney Putman</div>
+      <div class="phone"><a href="tel:+12174147190">+1 217-414-7190</a></div>
+      <div class="addr">12220 Salisbury Road, Pleasant Plains, IL 62677</div>
+      <div class="meta"><span class="badge water">Water Damage</span><span class="badge owner-yes">Owner</span><span class="badge calls-1">1 call</span></div>
+      <div class="desc">Water intrusion in garage — needs assessment.</div>
+      <select onchange="saveStatus('2174147190',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
+
   </div>
 </div>
 
-<!-- OTHER -->
-<div class="section section-other">
-  <div class="section-header">🟣 Other / No Address / Out-of-Area <span class="badge">6 jobs</span></div>
+<div class="divider"></div>
+
+<!-- ===================== OTHER (PURPLE) ===================== -->
+<div class="section" id="zip-other">
+  <div class="section-title">🟣 Other / Out-of-Area</div>
   <div class="cards">
-    <!-- West Reese -->
-    <div class="card" id="card-7143853849" data-phone="7143853849">
-      <span class="card-time">Jun 15 05:29 PM</span>
-      <div class="card-name">West Reese</div>
-      <div class="card-phone">714-385-3849</div>
-      <div class="card-address">Timber Ridge Drive, Springfield (ZIP unknown)</div>
-      <div><span class="card-type water">Water Damage</span></div>
-      <div class="card-owner">Owner: No</div>
-      <div class="card-desc">"Requesting photos of inspection"</div>
-      <select onchange="saveStatus('7143853849',this.value)">
-        <option value="new">New</option><option value="called">Called-No Answer</option><option value="contacted">Contacted</option><option value="scheduled">Scheduled</option><option value="dispatched">Crew Dispatched</option><option value="inprogress">In Progress</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option>
-      </select>
+
+    <div class="card">
+      <div class="name">West Reese</div>
+      <div class="phone"><a href="tel:+17143853849">+1 714-385-3849</a></div>
+      <div class="addr">Timber Ridge Drive, Springfield, IL (ZIP unknown)</div>
+      <div class="meta"><span class="badge water">Water Damage</span><span class="badge owner-no">Not Owner</span><span class="badge calls-1">1 call</span></div>
+      <div class="desc">Requesting photos from inspection already in progress.</div>
+      <select onchange="saveStatus('7143853849',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
-    <!-- Rosemary Leistner -->
-    <div class="card" id="card-2177413028" data-phone="2177413028">
-      <span class="card-time">Jun 14 12:44 PM</span>
-      <div class="card-name">Rosemary Leistner</div>
-      <div class="card-phone">217-741-3028</div>
-      <div class="card-address">Springfield, IL</div>
-      <div><span class="card-type allelse">All Else</span></div>
-      <div class="card-desc">"Please call back to confirm that someone will be onsite Monday at 8am"</div>
-      <select onchange="saveStatus('2177413028',this.value)">
-        <option value="new">New</option><option value="called">Called-No Answer</option><option value="contacted">Contacted</option><option value="scheduled">Scheduled</option><option value="dispatched">Crew Dispatched</option><option value="inprogress">In Progress</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option>
-      </select>
+
+    <div class="card">
+      <div class="name">Rosemary Leistner</div>
+      <div class="phone"><a href="tel:+12177413028">+1 217-741-3028</a></div>
+      <div class="addr">(No address provided)</div>
+      <div class="meta"><span class="badge other">All Else</span><span class="badge calls-1">1 call</span></div>
+      <div class="desc">Calling to confirm Monday 8am appointment.</div>
+      <select onchange="saveStatus('2177413028',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
-    <!-- Jim Highfill Jr -->
-    <div class="card" id="card-2174152981" data-phone="2174152981">
-      <span class="card-time">Jun 14 08:39 AM</span>
-      <div class="card-name">Jim Highfill Jr</div>
-      <div class="card-phone">217-415-2981</div>
-      <div class="card-address">Springfield, IL</div>
-      <div><span class="card-type allelse">All Else</span></div>
-      <div class="card-desc">"Workers doing services, two metal cabinets not moved. Please call back."</div>
-      <select onchange="saveStatus('2174152981',this.value)">
-        <option value="new">New</option><option value="called">Called-No Answer</option><option value="contacted">Contacted</option><option value="scheduled">Scheduled</option><option value="dispatched">Crew Dispatched</option><option value="inprogress">In Progress</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option>
-      </select>
+
+    <div class="card">
+      <div class="name">Jim Highfill Jr</div>
+      <div class="phone"><a href="tel:+12174152981">+1 217-415-2981</a></div>
+      <div class="addr">(No address provided)</div>
+      <div class="meta"><span class="badge other">All Else</span><span class="badge calls-1">1 call</span></div>
+      <div class="desc">Metal cabinets not moved prior to service — follow-up needed.</div>
+      <select onchange="saveStatus('2174152981',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
-    <!-- John Richardson -->
-    <div class="card" id="card-2175535184" data-phone="2175535184">
-      <span class="card-time">Jun 13 01:51 PM</span>
-      <div class="card-name">John Richardson</div>
-      <div class="card-phone">217-553-5184</div>
-      <div class="card-address">Springfield, IL</div>
-      <div><span class="card-type allelse">All Else</span></div>
-      <div class="card-desc">"Had an appointment to have his basement dried — no one arrived. Please follow up ASAP."</div>
-      <select onchange="saveStatus('2175535184',this.value)">
-        <option value="new">New</option><option value="called">Called-No Answer</option><option value="contacted">Contacted</option><option value="scheduled">Scheduled</option><option value="dispatched">Crew Dispatched</option><option value="inprogress">In Progress</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option>
-      </select>
+
+    <div class="card">
+      <div class="name">John Richardson</div>
+      <div class="phone"><a href="tel:+12175535184">+1 217-553-5184</a></div>
+      <div class="addr">(No address provided)</div>
+      <div class="meta"><span class="badge other">All Else</span><span class="badge calls-1">1 call</span></div>
+      <div class="desc">Appointment missed — basement drying ongoing, needs follow-up.</div>
+      <select onchange="saveStatus('2175535184',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
-    <!-- Cathy Sladge -->
-    <div class="card" id="card-6183151959" data-phone="6183151959">
-      <span class="card-time">Jun 13 02:26 PM</span>
-      <div class="card-name">Cathy Sladge</div>
-      <div class="card-phone">618-315-1959</div>
-      <div class="card-address">Mount Vernon, IL</div>
-      <div><span class="card-type allelse">All Else</span></div>
-      <div class="card-desc">"Checking how far down the list she is to have basement water removed. Leave a message if no answer."</div>
-      <select onchange="saveStatus('6183151959',this.value)">
-        <option value="new">New</option><option value="called">Called-No Answer</option><option value="contacted">Contacted</option><option value="scheduled">Scheduled</option><option value="dispatched">Crew Dispatched</option><option value="inprogress">In Progress</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option>
-      </select>
+
+    <div class="card">
+      <div class="name">Rochelle Sales</div>
+      <div class="phone"><a href="tel:+12175217772">+1 217-521-7772</a></div>
+      <div class="addr">Decatur, IL</div>
+      <div class="meta"><span class="badge other">All Else</span><span class="badge calls-1">1 call</span></div>
+      <div class="desc">Requesting estimate for 3 rooms of restoration.</div>
+      <select onchange="saveStatus('2175217772',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
-    <!-- Rochelle Sales -->
-    <div class="card" id="card-2175217772" data-phone="2175217772">
-      <span class="card-time">Jun 13 04:08 PM</span>
-      <div class="card-name">Rochelle Sales</div>
-      <div class="card-phone">217-521-7772</div>
-      <div class="card-address">Decatur, IL</div>
-      <div><span class="card-type allelse">All Else</span></div>
-      <div class="card-desc">"Interested in getting three rooms cleaned — wants an estimate"</div>
-      <select onchange="saveStatus('2175217772',this.value)">
-        <option value="new">New</option><option value="called">Called-No Answer</option><option value="contacted">Contacted</option><option value="scheduled">Scheduled</option><option value="dispatched">Crew Dispatched</option><option value="inprogress">In Progress</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option>
-      </select>
+
+    <div class="card">
+      <div class="name">Cathy Sladge</div>
+      <div class="phone"><a href="tel:+16183151959">+1 618-315-1959</a></div>
+      <div class="addr">Mt Vernon, IL</div>
+      <div class="meta"><span class="badge other">All Else</span><span class="badge calls-1">1 call</span></div>
+      <div class="desc">Checking position on service list — awaiting appointment.</div>
+      <select onchange="saveStatus('6183151959',this.value)"><option>🔵 New</option><option>📞 Called Back</option><option>🚗 En Route</option><option>✅ On Site</option><option>📋 Quoted</option><option>🔒 Closed</option><option>❌ Cancelled</option></select>
     </div>
+
   </div>
 </div>
 
-<!-- CANCELLATIONS -->
-<div class="section section-cancel">
-  <div class="section-header">⚫ Cancellations / Removed from List <span class="badge">4</span></div>
+<div class="divider"></div>
+
+<!-- ===================== CANCELLATIONS ===================== -->
+<div class="section" id="cancellations">
+  <div class="section-title">⬛ Cancellations</div>
   <div class="cards">
-    <!-- Whitney Kim -->
-    <div class="card status-cancelled" id="card-2174946157" data-phone="2174946157">
-      <span class="card-time">Jun 13 12:08 PM</span>
-      <div class="card-name">Whitney Kim <span class="call-count">📞 3 calls</span></div>
-      <div class="card-phone">217-494-6157 · Springfield</div>
-      <div class="cancel-reason">"Calling to cancel service request. No call back needed."</div>
+
+    <div class="card cancel-card">
+      <div class="name">Whitney Kim</div>
+      <div class="phone"><a href="tel:+12174946157">+1 217-494-6157</a></div>
+      <div class="addr">35 Providence Lane, Springfield, IL 62711</div>
+      <div class="meta"><span class="badge water">Water Damage</span><span class="badge calls-3">3 calls</span></div>
+      <div class="cancel-note">❌ Cancelled Jun 13, 12:09 PM — called 3× before cancelling.</div>
     </div>
-    <!-- Colette Albertson -->
-    <div class="card status-cancelled" id="card-2173410094" data-phone="2173410094">
-      <span class="card-time">Jun 13 12:43 PM</span>
-      <div class="card-name">Colette Albertson <span class="call-count">📞 2 calls</span></div>
-      <div class="card-phone">217-341-0094 · Springfield</div>
-      <div class="cancel-reason">"Calling to cancel service request. Please call to confirm cancellation."</div>
+
+    <div class="card cancel-card">
+      <div class="name">Colette Albertson</div>
+      <div class="phone"><a href="tel:+12173410094">+1 217-341-0094</a></div>
+      <div class="addr">2412 Harrier Road, Springfield, IL 62711</div>
+      <div class="meta"><span class="badge water">Water Damage</span><span class="badge calls-2">2 calls</span></div>
+      <div class="cancel-note">❌ Cancelled Jun 13, 12:44 PM — called 2× before cancelling.</div>
     </div>
-    <!-- Sandra Mcmakin -->
-    <div class="card status-cancelled" id="card-2178169236" data-phone="2178169236">
-      <span class="card-time">Jun 13 11:18 AM</span>
-      <div class="card-name">Sandra Mcmakin <span class="call-count">📞 2 calls</span></div>
-      <div class="card-phone">217-816-9236 · Springfield</div>
-      <div class="cancel-reason">"Called to cancel her service — it is not needed."</div>
+
+    <div class="card cancel-card">
+      <div class="name">Sandra Mcmakin</div>
+      <div class="phone"><a href="tel:+12178169236">+1 217-816-9236</a></div>
+      <div class="addr">2320 Gander Road, Springfield, IL 62711</div>
+      <div class="meta"><span class="badge water">Water Damage</span><span class="badge calls-2">2 calls</span></div>
+      <div class="cancel-note">❌ Cancelled Jun 13, 11:19 AM — called 2× before cancelling.</div>
     </div>
-    <!-- Joe Verdeyen -->
-    <div class="card status-cancelled" id="card-2178218679" data-phone="2178218679">
-      <span class="card-time">Jun 13 07:51 AM</span>
-      <div class="card-name">Joe Verdeyen</div>
-      <div class="card-phone">217-821-8679 · Effingham, IL</div>
-      <div class="cancel-reason">"Received a voicemail from Jackie — wants off the list, problem has been solved."</div>
+
+    <div class="card cancel-card">
+      <div class="name">Joe Verdeyen</div>
+      <div class="phone"><a href="tel:+12178218679">+1 217-821-8679</a></div>
+      <div class="addr">Effingham, IL</div>
+      <div class="meta"><span class="badge other">All Else</span><span class="badge calls-1">1 call</span></div>
+      <div class="cancel-note">❌ Wants to be removed from list — Jun 13, 7:52 AM.</div>
     </div>
+
   </div>
 </div>
 
 <div style="height:30px"></div>
 
 <script>
-// Clock
-function tick(){
-  const now=new Date();
-  document.getElementById('clock').textContent=now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:true})+' CDT';
-}
-tick();setInterval(tick,30000);
-
-// Status options map to CSS class suffix
-const classSuffix={new:'new',called:'called',contacted:'contacted',scheduled:'scheduled',dispatched:'dispatched',inprogress:'inprogress',complete:'complete',cancelled:'cancelled'};
-
-function saveStatus(phone,val){
-  localStorage.setItem('prl_'+phone,val);
-  applyStatus(phone,val);
-}
-
-function applyStatus(phone,val){
-  const card=document.getElementById('card-'+phone);
-  if(!card)return;
-  // Remove old status classes
-  card.className=card.className.replace(/\bstatus-\S+/g,'').trim();
-  card.classList.add('status-'+val);
-  // Set the select value
-  const sel=card.querySelector('select');
-  if(sel)sel.value=val;
-}
-
-// Load saved statuses on page load
-document.addEventListener('DOMContentLoaded',function(){
-  document.querySelectorAll('.card[data-phone]').forEach(function(card){
-    const phone=card.dataset.phone;
-    const saved=localStorage.getItem('prl_'+phone);
-    if(saved)applyStatus(phone,saved);
-    else{
-      // Set default "new" class
-      if(!card.classList.contains('status-cancelled'))card.classList.add('status-new');
-    }
+  // Timestamp
+  document.getElementById('ts').textContent = new Date('2026-06-16T00:00:00').toLocaleString('en-US',{
+    month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true
   });
-});
+
+  // localStorage status persistence
+  function saveStatus(phone, val) {
+    localStorage.setItem('peerless_status_' + phone, val);
+  }
+
+  function loadStatuses() {
+    document.querySelectorAll('select').forEach(function(sel) {
+      var fn = sel.getAttribute('onchange');
+      if (!fn) return;
+      var m = fn.match(/saveStatus\('([^']+)'/);
+      if (!m) return;
+      var phone = m[1];
+      var saved = localStorage.getItem('peerless_status_' + phone);
+      if (saved) {
+        for (var i = 0; i < sel.options.length; i++) {
+          if (sel.options[i].value === saved || sel.options[i].text === saved) {
+            sel.selectedIndex = i;
+            break;
+          }
+        }
+      }
+    });
+  }
+
+  loadStatuses();
 </script>
 </body>
 </html>
