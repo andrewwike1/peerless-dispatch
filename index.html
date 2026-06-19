@@ -3,500 +3,187 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Peerless Restoration — Dispatch Dashboard</title>
+<title>Peerless Restoration — Dispatch Board</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;}
-body{background:#1a1a2e;color:#e0e0e0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;min-height:100vh;}
-header{position:sticky;top:0;z-index:200;background:#0d0d1a;padding:14px 20px;border-bottom:2px solid #2d2d4e;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;box-shadow:0 2px 12px rgba(0,0,0,.5);}
-header h1{font-size:1.3rem;font-weight:700;color:#fff;}
-.updated{font-size:.78rem;color:#6b7280;}
-.stats-bar{background:#12122a;padding:10px 20px;display:flex;gap:20px;flex-wrap:wrap;border-bottom:1px solid #2d2d4e;overflow-x:auto;}
-.stat-item{display:flex;align-items:center;gap:5px;font-size:.82rem;white-space:nowrap;color:#9ca3af;}
-.stat-item strong{color:#f3f4f6;font-size:.95rem;}
-.main{padding:16px;max-width:1600px;margin:0 auto;}
-.section{margin-bottom:28px;}
-.section-header{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:8px 8px 0 0;font-weight:700;font-size:.95rem;}
-.urgent .section-header{background:#450a0a;color:#fca5a5;border-left:4px solid #dc2626;}
-.s62711 .section-header{background:#0c1e3d;color:#93c5fd;border-left:4px solid #3b82f6;}
-.s62704 .section-header{background:#062014;color:#86efac;border-left:4px solid #16a34a;}
-.s62677 .section-header{background:#291900;color:#fde68a;border-left:4px solid #d97706;}
-.other .section-header{background:#1a0a2e;color:#c4b5fd;border-left:4px solid #9333ea;}
-.cancelled-section .section-header{background:#1f1f1f;color:#6b7280;border-left:4px solid #4b5563;}
-.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;padding:12px 0 4px;}
-.card{background:#16213e;border-radius:8px;padding:14px;border-left:4px solid transparent;display:flex;flex-direction:column;transition:box-shadow .2s;}
-.card:hover{box-shadow:0 4px 20px rgba(0,0,0,.4);}
-.urgent .card{border-left-color:#dc2626;}
-.s62711 .card{border-left-color:#3b82f6;}
-.s62704 .card{border-left-color:#16a34a;}
-.s62677 .card{border-left-color:#d97706;}
-.other .card{border-left-color:#9333ea;}
-.cancelled-section .card{border-left-color:#4b5563;opacity:.6;}
-.card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
-.caller-name{font-weight:700;font-size:1rem;color:#f9fafb;line-height:1.2;}
-.call-count{font-size:.72rem;padding:2px 8px;border-radius:12px;background:#374151;color:#d1d5db;white-space:nowrap;flex-shrink:0;margin-left:8px;}
-.urgent .call-count{background:#991b1b;color:#fecaca;font-weight:700;}
-.phone-row{margin:5px 0;}
-.phone-row a{color:#60a5fa;text-decoration:none;font-size:.95rem;font-weight:600;}
-.phone-row a:hover{text-decoration:underline;color:#93c5fd;}
-.address-row{font-size:.82rem;color:#9ca3af;margin:3px 0 8px;line-height:1.4;}
-.badges{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;}
-.badge{font-size:.72rem;padding:2px 8px;border-radius:10px;font-weight:500;}
-.badge-type{background:#1e3a6e;color:#93c5fd;}
-.badge-owner-yes{background:#064e3b;color:#6ee7b7;}
-.badge-owner-no{background:#7f1d1d;color:#fca5a5;}
-.badge-existing{background:#3d2e00;color:#fbbf24;}
-.badge-cancelled{background:#1f1f1f;color:#6b7280;}
-.badge-zip{background:#991b1b;color:#fecaca;font-weight:700;}
-.notes{font-size:.8rem;color:#d1d5db;line-height:1.45;padding-top:8px;border-top:1px solid #1e2d4e;margin-top:4px;flex-grow:1;}
-.card-footer{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:8px;border-top:1px solid #1e2d4e;}
-.recv-time{font-size:.72rem;color:#6b7280;}
-.status-select{font-size:.78rem;padding:4px 8px;border-radius:5px;border:1px solid #374151;cursor:pointer;font-weight:600;min-width:110px;}
-.status-new{background:#374151;color:#e5e7eb;}
-.status-called{background:#1e3a6e;color:#93c5fd;}
-.status-scheduled{background:#064e3b;color:#6ee7b7;}
-.status-complete{background:#111827;color:#6b7280;}
-.status-noanswer{background:#431407;color:#fdba74;}
-@keyframes urgentPulse{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,.4);}50%{box-shadow:0 0 0 6px rgba(220,38,38,0);}}
-.urgent .card{animation:urgentPulse 2.5s ease-in-out infinite;}
-@media(max-width:640px){.main{padding:10px;}.cards-grid{grid-template-columns:1fr;}header{padding:10px 14px;}header h1{font-size:1.05rem;}.stats-bar{gap:14px;padding:8px 14px;}}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f2f5;color:#222}
+.hdr{position:sticky;top:0;z-index:99;background:#1a1a2e;color:#fff;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.hdr-title{font-size:1.2rem;font-weight:700}
+.hdr-sub{font-size:.76rem;color:#aaa;margin-top:2px}
+.hdr-time{font-size:.78rem;color:#ccc;text-align:right;line-height:1.5}
+.board{padding:16px;max-width:1400px;margin:0 auto}
+.sec{margin-bottom:26px}
+.sec-hdr{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:8px 8px 0 0;font-weight:700;font-size:.92rem;color:#fff}
+.cnt{background:rgba(255,255,255,.25);border-radius:12px;padding:2px 9px;font-size:.73rem;font-weight:600}
+.sec-urgent .sec-hdr{background:#b71c1c}
+.sec-62711 .sec-hdr{background:#1565c0}
+.sec-62704 .sec-hdr{background:#2e7d32}
+.sec-62677 .sec-hdr{background:#e65100}
+.sec-other .sec-hdr{background:#6a1b9a}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(305px,1fr));gap:11px;padding:12px;background:rgba(0,0,0,.04);border-radius:0 0 8px 8px}
+.card{background:#fff;border-radius:8px;padding:13px;box-shadow:0 1px 4px rgba(0,0,0,.1);border-left:4px solid #ccc}
+.card.cu{border-left-color:#b71c1c}
+.card.cr{border-left-color:#e65100}
+.card.cc{border-left-color:#9e9e9e;opacity:.72}
+.card.cn{border-left-color:#388e3c}
+.ctop{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:7px;gap:8px}
+.cname{font-weight:700;font-size:.95rem;color:#1a1a2e}
+.cphone{font-size:.74rem;color:#777;margin-top:2px}
+.badge{font-size:.65rem;font-weight:700;padding:3px 7px;border-radius:10px;white-space:nowrap;text-transform:uppercase;letter-spacing:.4px;flex-shrink:0;margin-top:2px}
+.bu{background:#b71c1c;color:#fff}
+.br{background:#e65100;color:#fff}
+.bn{background:#388e3c;color:#fff}
+.bc{background:#9e9e9e;color:#fff}
+.det{font-size:.78rem;color:#555;margin-bottom:3px;display:flex;gap:5px;line-height:1.4}
+.lbl{color:#aaa;min-width:56px;flex-shrink:0;font-size:.74rem}
+.desc{font-size:.78rem;color:#555;background:#f8f9fa;border-radius:4px;padding:6px 8px;margin:7px 0;border-left:3px solid #dee2e6;line-height:1.45}
+.ctime{font-size:.71rem;color:#bbb;margin-top:5px}
+.sel-row{margin-top:8px}
+select.sts{width:100%;padding:5px 8px;border:1px solid #ddd;border-radius:6px;font-size:.78rem;color:#333;cursor:pointer;transition:background .15s}
+select.sts:focus{outline:none;border-color:#1565c0;box-shadow:0 0 0 2px rgba(21,101,192,.2)}
+.footer{text-align:center;color:#bbb;font-size:.7rem;padding:24px 16px}
+@media(max-width:540px){.hdr{flex-direction:column;align-items:flex-start;gap:4px}.hdr-time{font-size:.72rem}}
 </style>
 </head>
 <body>
-<header>
+
+<div class="hdr">
   <div>
-    <h1>&#128680; Peerless Restoration &mdash; Dispatch Dashboard</h1>
-    <div class="updated" id="upd">Loading&hellip;</div>
+    <div class="hdr-title">Peerless Restoration</div>
+    <div class="hdr-sub">Dispatch Board &mdash; Springfield, IL</div>
   </div>
-</header>
-<div class="stats-bar">
-  <div class="stat-item">Total Active: <strong>37</strong></div>
-  <div class="stat-item">&#128308; URGENT: <strong>2</strong></div>
-  <div class="stat-item">&#128309; ZIP 62711: <strong>14</strong></div>
-  <div class="stat-item">&#128994; ZIP 62704: <strong>7</strong></div>
-  <div class="stat-item">&#128993; ZIP 62677: <strong>1</strong></div>
-  <div class="stat-item">&#128995; Other/OOA: <strong>13</strong></div>
-  <div class="stat-item">&#10060; Cancelled: <strong>4</strong></div>
-</div>
-<div class="main">
-
-<!-- URGENT -->
-<div class="section urgent">
-  <div class="section-header">&#9888;&#65039; URGENT &mdash; 3+ Calls / No Response &mdash; Call Immediately</div>
-  <div class="cards-grid">
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Mike Duke</div><div class="call-count">&#9888; 4 CALLS</div></div>
-      <div class="phone-row"><a href="tel:2178166835">217-816-6835</a></div>
-      <div class="address-row">4008 Surry Place Lane, Springfield 62711</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-owner-yes">Owner: Yes</span><span class="badge badge-zip">62711</span></div>
-      <div class="notes">Called Thu, Fri, Sat &mdash; crew no-show every time. Needs to know when someone will come. Extremely frustrated after 4 calls with no resolution.</div>
-      <div class="card-footer"><div class="recv-time">Jun 13 &middot; 11:15 AM (first) &middot; 4 calls total</div><select class="status-select" data-phone="2178166835" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Pat Oconnor</div><div class="call-count">&#9888; 3 CALLS</div></div>
-      <div class="phone-row"><a href="tel:2176381729">217-638-1729</a></div>
-      <div class="address-row">28009 Rainer Drive, Springfield 62704</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-owner-no">Owner: No</span><span class="badge badge-zip">62704</span></div>
-      <div class="notes">Asking about pulling vinyl. No response to prior calls. Called 3 times with no callback. Needs immediate response.</div>
-      <div class="card-footer"><div class="recv-time">Jun 13 &middot; 8:22 AM (first) &middot; 3 calls total</div><select class="status-select" data-phone="2176381729" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-  </div>
+  <div class="hdr-time" id="ts"></div>
 </div>
 
-<!-- ZIP 62711 -->
-<div class="section s62711">
-  <div class="section-header">&#128309; ZIP 62711 &mdash; Springfield (14 callers)</div>
-  <div class="cards-grid">
+<div class="board" id="board"></div>
+<div class="footer" id="footer"></div>
 
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Kelly Hurst</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:2173417483">217-341-7483</a></div>
-      <div class="address-row">4661 Barrington Dr, Springfield 62711</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-owner-yes">Owner: Yes</span></div>
-      <div class="notes">Water damage inquiry. Awaiting callback.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="2173417483" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Billie Berghold</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:2174141965">217-414-1965</a></div>
-      <div class="address-row">2309 Knoxville, Springfield 62711</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-owner-yes">Owner: Yes</span></div>
-      <div class="notes">Basement water damage, carpet soaked. Had issues with Serve Pro &mdash; looking for better service provider.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="2174141965" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Brian Collins</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:2178161775">217-816-1775</a></div>
-      <div class="address-row">2005 Monterey Drive, Springfield 62711</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-owner-yes">Owner: Yes</span></div>
-      <div class="notes">Power loss caused water damage to home.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="2178161775" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Neil Polomas</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:2177252145">217-725-2145</a></div>
-      <div class="address-row">2400 Asheville Drive, Springfield 62711</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-owner-yes">Owner: Yes</span></div>
-      <div class="notes">Sewer backup, needs water extraction.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="2177252145" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Kurt Davis</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:3143412378">314-341-2378</a></div>
-      <div class="address-row">5308 Jaeger Drive, Springfield 62711 <span style="color:#f59e0b;font-size:.75rem;">(caller in Ladue, MO)</span></div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-owner-yes">Owner: Yes</span></div>
-      <div class="notes">Basement water backup during power outage. Property is in Springfield 62711 &mdash; owner calling from Missouri.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="3143412378" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Dave Chapman</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:2178360211">217-836-0211</a></div>
-      <div class="address-row">4004 Old Mill Lane, Springfield 62711</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-owner-yes">Owner: Yes</span></div>
-      <div class="notes">Asking about disinfectant treatment for standing water and wet drywall.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="2178360211" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Jodi Grant</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:2177253922">217-725-3922</a></div>
-      <div class="address-row">2109 Burgess Drive, Springfield 62711</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-owner-yes">Owner: Yes</span></div>
-      <div class="notes">Basement flooded, drywall wet. Needs drying services.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="2177253922" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Rick Soehnlin</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:2178010673">217-801-0673</a></div>
-      <div class="address-row">210 Gray Court, Springfield 62711</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-owner-yes">Owner: Yes</span></div>
-      <div class="notes">Basement water from sump pump failure during power outage.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="2178010673" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Cody Trigg</div><div class="call-count">2 calls</div></div>
-      <div class="phone-row"><a href="tel:2174161887">217-416-1887</a></div>
-      <div class="address-row">4600 Pearson St, Springfield 62711</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-owner-yes">Owner: Yes</span></div>
-      <div class="notes">Awaiting callback. Mentioned may be leaving home &mdash; time-sensitive. Called twice.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026 &middot; 2 calls</div><select class="status-select" data-phone="2174161887" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Danielle Alstott</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:2176711900">217-671-1900</a></div>
-      <div class="address-row">2808 Whiteside Place, Springfield 62711</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-owner-yes">Owner: Yes</span></div>
-      <div class="notes">Has quote already &mdash; asking how soon a tech can start. Ready to proceed.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="2176711900" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Anna Matula</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:2177415820">217-741-5820</a></div>
-      <div class="address-row">Turnstone Road, Springfield 62711</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-owner-yes">Owner: Yes</span><span class="badge badge-existing">Existing Job</span></div>
-      <div class="notes">Workers were supposed to arrive today &mdash; calling for status update on existing job.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="2177415820" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Jane Rouland</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:2174156114">217-415-6114</a></div>
-      <div class="address-row">3303 Lakemere Drive, Springfield 62711</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-owner-yes">Owner: Yes</span></div>
-      <div class="notes">New home &mdash; shifted sump pump pipe caused wet carpet and insulation damage.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="2174156114" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Tom Sestak</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:2178168846">217-816-8846</a></div>
-      <div class="address-row">2305 Gander Road, Springfield 62711</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-owner-yes">Owner: Yes</span><span class="badge badge-existing">Existing Job</span></div>
-      <div class="notes">Confirming appointment today and requesting change to contact number on file.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="2178168846" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Leslie Frederick</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:2178364810">217-836-4810</a></div>
-      <div class="address-row">2808 Covered Wagon Trail, Springfield 62711</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-owner-yes">Owner: Yes</span></div>
-      <div class="notes">&#128165; URGENT: Water in basement. Needs appointment ASAP.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="2178364810" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-  </div>
-</div>
-
-<!-- ZIP 62704 -->
-<div class="section s62704">
-  <div class="section-header">&#128994; ZIP 62704 &mdash; Springfield / Jerome (7 callers)</div>
-  <div class="cards-grid">
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Kalpana Desai</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:2178990830">217-899-0830</a></div>
-      <div class="address-row">212 Astoria Road, Springfield 62704</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-owner-yes">Owner: Yes</span></div>
-      <div class="notes">3 days with no callback. Smell developing upstairs. Claim #7010298024. Needs immediate attention.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="2178990830" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Sammy / Cody Needham</div><div class="call-count">2 calls</div></div>
-      <div class="phone-row"><a href="tel:2176229032">217-622-9032</a></div>
-      <div class="address-row">2809 Rayner Drive, Jerome 62704</div>
-      <div class="badges"><span class="badge badge-type">Water / Storm Damage</span><span class="badge badge-owner-yes">Owner: Yes</span></div>
-      <div class="notes">Storm damage inquiry. Wants update on basement status. Called twice.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026 &middot; 2 calls</div><select class="status-select" data-phone="2176229032" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Patrick Quigley</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:2174140414">217-414-0414</a></div>
-      <div class="address-row">2305 Amber Court, Springfield 62704</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-owner-yes">Owner: Yes</span></div>
-      <div class="notes">Urgent &mdash; please contact today.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="2174140414" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Jon Launer</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:8085428476">808-542-8476</a></div>
-      <div class="address-row">112 Norwalk Road, Springfield 62704</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-owner-yes">Owner: Yes</span></div>
-      <div class="notes">Home flooded by storm.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="8085428476" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Megan Forness</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:2177203433">217-720-3433</a></div>
-      <div class="address-row">119 Calvin Avenue, Springfield 62704</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-owner-yes">Owner: Yes</span></div>
-      <div class="notes">3 inches of water in basement. Battery backup failed. Carpet and mold concern.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="2177203433" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Jennifer Notariano</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:9855070166">985-507-0166</a></div>
-      <div class="address-row">1604 South Lowell Avenue, Springfield 62704</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-owner-yes">Owner: Yes</span></div>
-      <div class="notes">Water receding. Wants blowout/restoration services.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="9855070166" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Lisa Belz</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:2174156454">217-415-6454</a></div>
-      <div class="address-row">3125 La Conner Drive, Springfield 62704</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-owner-no">Owner: No</span></div>
-      <div class="notes">Calling on behalf of her son. Urgent &mdash; needs immediate response.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="2174156454" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-  </div>
-</div>
-
-<!-- ZIP 62677 -->
-<div class="section s62677">
-  <div class="section-header">&#128993; ZIP 62677 &mdash; Pleasant Plains (1 caller)</div>
-  <div class="cards-grid">
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Courtney Putman</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:2174147190">217-414-7190</a></div>
-      <div class="address-row">12220 Salisbury Road, Pleasant Plains 62677</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-owner-yes">Owner: Yes</span></div>
-      <div class="notes">Water in garage.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="2174147190" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-  </div>
-</div>
-
-<!-- OTHER -->
-<div class="section other">
-  <div class="section-header">&#128995; Other / Out-of-Area &amp; Existing Service (13 callers)</div>
-  <div class="cards-grid">
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Cindy Jenkins</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:2178556774">217-855-6774</a></div>
-      <div class="address-row">1020 Veech Lane, Decatur 62521</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-owner-yes">Owner: Yes</span></div>
-      <div class="notes">&#128165; URGENT: Sewage backup + active flooding. Decatur &mdash; needs immediate response.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="2178556774" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Jim Highfill Jr</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:2174152981">217-415-2981</a></div>
-      <div class="address-row">Springfield, IL</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-existing">Existing Job</span></div>
-      <div class="notes">Workers on site &mdash; cabinets need to be moved before work can continue. Action needed.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="2174152981" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">John Richardson</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:2175535184">217-553-5184</a></div>
-      <div class="address-row">Springfield, IL</div>
-      <div class="badges"><span class="badge badge-type">All Else</span><span class="badge badge-existing">Existing Job</span></div>
-      <div class="notes">Expected appointment today &mdash; no one has arrived. Needs follow-up immediately.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="2175535184" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Rosemary Leistner</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:2177413028">217-741-3028</a></div>
-      <div class="address-row">Springfield, IL</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-existing">Existing Job</span></div>
-      <div class="notes">Confirming Monday 8 AM onsite appointment.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="2177413028" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Bryan West</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:2176150383">217-615-0383</a></div>
-      <div class="address-row">260 Larkspur Drive, Decatur 62522</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-owner-yes">Owner: Yes</span></div>
-      <div class="notes">Water damage &mdash; Decatur area.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="2176150383" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Matt Brown</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:2175193492">217-519-3492</a></div>
-      <div class="address-row">421 Woodside Trail, Unit E2/E1, Decatur 62521</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-owner-no">Condo Assoc. President</span></div>
-      <div class="notes">Condo association president calling about water damage to units.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="2175193492" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Scott Dowell</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:2175207624">217-520-7624</a></div>
-      <div class="address-row">1517 South 44th Street, Decatur 62521</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-owner-yes">Owner: Yes</span></div>
-      <div class="notes">Water damage &mdash; Decatur.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="2175207624" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Rebecca Worthin</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:2175215380">217-521-5380</a></div>
-      <div class="address-row">2560 South Long Creek Road, Decatur 62521</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-owner-yes">Owner: Yes</span></div>
-      <div class="notes">Water damage &mdash; Decatur.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="2175215380" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Hannah Hissong</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:2603121203">260-312-1203</a></div>
-      <div class="address-row">3926 East Park Lane, Decatur 62521</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-owner-yes">Owner: Yes</span></div>
-      <div class="notes">Water damage &mdash; Decatur area.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="2603121203" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Rochelle Sales</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:2175217772">217-521-7772</a></div>
-      <div class="address-row">Decatur, IL</div>
-      <div class="badges"><span class="badge badge-type">All Else</span><span class="badge badge-owner-yes">Residential</span></div>
-      <div class="notes">Requesting estimate for 3 rooms.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="2175217772" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Cathy Sladge</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:6183151959">618-315-1959</a></div>
-      <div class="address-row">Mount Vernon, IL</div>
-      <div class="badges"><span class="badge badge-type">All Else</span><span class="badge badge-owner-yes">Residential</span></div>
-      <div class="notes">Checking queue / wait time.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="6183151959" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">West Reese</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:7143853849">714-385-3849</a></div>
-      <div class="address-row">Timber Ridge Drive, Springfield, IL</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-owner-no">Insurance Adjuster</span></div>
-      <div class="notes">Insurance adjuster requesting photos of property/damage.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="7143853849" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Lizy (last name unknown)</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:9102614215">910-261-4215</a></div>
-      <div class="address-row">Location unknown</div>
-      <div class="badges"><span class="badge badge-type">All Else</span></div>
-      <div class="notes">Inquiring about carpet cleaning services.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select" data-phone="9102614215" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-  </div>
-</div>
-
-<!-- CANCELLED -->
-<div class="section cancelled-section">
-  <div class="section-header">&#10060; Cancelled / No Longer Needed (4 callers)</div>
-  <div class="cards-grid">
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Sandra Mcmakin</div><div class="call-count">2 calls</div></div>
-      <div class="phone-row"><a href="tel:2178169236">217-816-9236</a></div>
-      <div class="address-row">2320 Gander Road, Springfield 62711</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-cancelled">CANCELLED 11:18 AM</span></div>
-      <div class="notes">Called to cancel &mdash; service no longer needed.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18 &middot; 11:18 AM (cancelled)</div><select class="status-select status-complete" data-phone="2178169236" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete" selected>Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Colette Albertson</div><div class="call-count">3 calls</div></div>
-      <div class="phone-row"><a href="tel:2173410094">217-341-0094</a></div>
-      <div class="address-row">2412 Harrier Road, Springfield 62704</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-cancelled">CANCELLED 12:43 PM</span></div>
-      <div class="notes">Called to cancel service request. Had placed 3 calls total.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18 &middot; 12:43 PM (cancelled)</div><select class="status-select status-complete" data-phone="2173410094" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete" selected>Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Whitney Kim</div><div class="call-count">2 calls</div></div>
-      <div class="phone-row"><a href="tel:2174946157">217-494-6157</a></div>
-      <div class="address-row">35 Providence Lane, Springfield 62711</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-cancelled">CANCELLED 12:08 PM</span></div>
-      <div class="notes">Called to cancel service request. No callback needed.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18 &middot; 12:08 PM (cancelled)</div><select class="status-select status-complete" data-phone="2174946157" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete" selected>Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-    <div class="card">
-      <div class="card-top"><div class="caller-name">Lynn Renner</div><div class="call-count">1 call</div></div>
-      <div class="phone-row"><a href="tel:2172544784">217-254-4784</a></div>
-      <div class="address-row">Mattoon, IL (outside service area)</div>
-      <div class="badges"><span class="badge badge-type">Water Damage</span><span class="badge badge-cancelled">CANCELLED</span></div>
-      <div class="notes">No longer needs services.</div>
-      <div class="card-footer"><div class="recv-time">Jun 18, 2026</div><select class="status-select status-complete" data-phone="2172544784" onchange="saveStatus(this)"><option value="new">New</option><option value="called">Called</option><option value="scheduled">Scheduled</option><option value="complete" selected>Complete</option><option value="noanswer">No Answer</option></select></div>
-    </div>
-
-  </div>
-</div>
-
-</div>
 <script>
-document.getElementById('upd').textContent='Last updated: '+new Date().toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true,timeZone:'America/Chicago'})+' CT';
-function saveStatus(s){var p=s.dataset.phone,v=s.value;try{localStorage.setItem('pr_s_'+p,v);}catch(e){}applyStyle(s,v);}
-function applyStyle(s,v){s.className='status-select status-'+v;}
-window.addEventListener('DOMContentLoaded',function(){document.querySelectorAll('.status-select').forEach(function(s){var p=s.dataset.phone,v;try{v=localStorage.getItem('pr_s_'+p);}catch(e){}if(v){s.value=v;applyStyle(s,v);}else{applyStyle(s,s.value);}});});
+const JOBS = [
+  {id:1, name:"Mike Duke",        phone:"2178166835", addr:"4008 Surry Place Lane, Springfield 62711",           zip:"62711", type:"Water Damage", owner:"Yes", desc:"Called Thu, Fri, Sat, and Mon requesting service. Was told not receiving service on Fri; no contact since. Multiple escalating callbacks wanting status.", rcvd:"Jun 14 @ 8:47 AM", calls:3, def:"New"},
+  {id:2, name:"Pat Oconnor",      phone:"2176381729", addr:"28009 Rainer Drive, Springfield 62704",             zip:"62704", type:"Water Damage", owner:"No",  desc:"Reached out previously with no callback. On waiting list wanting updates. Asking about vinyl flooring options; needs an answer ASAP.", rcvd:"Jun 14 @ 9:52 AM", calls:3, def:"New"},
+  {id:3, name:"Cody Trigg",       phone:"2174161887", addr:"4600 Pearson St, Springfield 62711",                zip:"62711", type:"Water Damage", owner:"Yes", desc:"Awaiting callback for service request. Returning call from Jackie; wants confirmation of placement on the list.", rcvd:"Jun 13 @ 3:39 PM", calls:2, def:"New"},
+  {id:4, name:"Sammy Needham",    phone:"2176229032", addr:"2809 Rayner Drive, Jerome 62704",                   zip:"62704", type:"Water Damage", owner:"Yes", desc:"Storm water damage inquiry. Also called for a status update on scheduled basement check.", rcvd:"Jun 14 @ 8:22 AM", calls:2, def:"New"},
+  {id:5, name:"Sandra Mcmakin",   phone:"2178169236", addr:"2320 Gander Road, Springfield 62711",               zip:"62711", type:"Water Damage", owner:"Yes", desc:"Called previous day expecting a callback. Later called to CANCEL service.", rcvd:"Jun 13 @ 9:02 AM", calls:2, def:"Cancelled"},
+  {id:6, name:"Colette Albertson",phone:"2173410094", addr:"2412 Harrier Road, Springfield 62711",              zip:"62711", type:"Water Damage", owner:"Yes", desc:"Basement flooded from sump pump failure; placed on waiting list. Later called to CANCEL service request.", rcvd:"Jun 13 @ 8:35 AM", calls:2, def:"Cancelled"},
+  {id:7, name:"Whitney Kim",      phone:"2174946157", addr:"35 Providence Lane, Springfield 62711",             zip:"62711", type:"Water Damage", owner:"Yes", desc:"Was told service would be provided; has not received it and wants an ETA. Later called to CANCEL.", rcvd:"Jun 13 @ 7:50 AM", calls:2, def:"Cancelled"},
+  {id:8, name:"Kelly Hurst",      phone:"2173417483", addr:"4661 Barrington Dr, Springfield 62711",             zip:"62711", type:"Water Damage", owner:"Yes", desc:"Requesting water damage assistance.", rcvd:"Jun 15 @ 6:56 AM", calls:1, def:"New"},
+  {id:9, name:"Billie Berghold",  phone:"2174141965", addr:"2309 Knoxville Ave, Springfield 62711",             zip:"62711", type:"Water Damage", owner:"Yes", desc:"Basement water damage. Had issues with Serve Pro and is looking for an alternative provider.", rcvd:"Jun 15 @ 12:21 AM", calls:1, def:"New"},
+  {id:10,name:"Brian Collins",    phone:"2178161775", addr:"2005 Monterey Drive, Springfield 62711",            zip:"62711", type:"Water Damage", owner:"Yes", desc:"Power loss caused water damage.", rcvd:"Jun 14 @ 2:06 PM", calls:1, def:"New"},
+  {id:11,name:"Neil Polomas",     phone:"2177252145", addr:"2400 Asheville Drive, Springfield 62711",           zip:"62711", type:"Water Damage", owner:"Yes", desc:"Backup in basement; needs water extraction.", rcvd:"Jun 13 @ 8:06 PM", calls:1, def:"New"},
+  {id:12,name:"Kurt Davis",       phone:"3143412378", addr:"5308 Jaeger Drive, Springfield 62711",              zip:"62711", type:"Water Damage", owner:"Yes", desc:"Water backup into basement during power outage.", rcvd:"Jun 13 @ 4:58 PM", calls:1, def:"New"},
+  {id:13,name:"Dave Chapman",     phone:"2178360211", addr:"4004 Old Mill Lane, Springfield 62711",             zip:"62711", type:"Water Damage", owner:"Yes", desc:"Asking about disinfectant treatment for standing water and wet drywall.", rcvd:"Jun 13 @ 4:49 PM", calls:1, def:"New"},
+  {id:14,name:"Jodi Grant",       phone:"2177253922", addr:"2109 Burgess Drive, Springfield 62711",             zip:"62711", type:"Water Damage", owner:"Yes", desc:"Basement flooded; drywall is wet.", rcvd:"Jun 13 @ 4:19 PM", calls:1, def:"New"},
+  {id:15,name:"Rick Soehnlin",    phone:"2178010673", addr:"210 Gray Court, Springfield 62711",                 zip:"62711", type:"Water Damage", owner:"Yes", desc:"Basement water damage; sump pump failed during power outage.", rcvd:"Jun 13 @ 3:58 PM", calls:1, def:"New"},
+  {id:16,name:"Danielle Alstott", phone:"2176711900", addr:"2808 Whiteside Place, Springfield 62711",           zip:"62711", type:"Water Damage", owner:"Yes", desc:"Asking when work can start if she accepts the quote.", rcvd:"Jun 13 @ 3:19 PM", calls:1, def:"New"},
+  {id:17,name:"Anna Matula",      phone:"2177415820", addr:"Turnstone Road, Springfield 62711",                 zip:"62711", type:"Water Damage", owner:"Yes", desc:"Workers were supposed to be on property today; calling for a status update.", rcvd:"Jun 13 @ 2:03 PM", calls:1, def:"New"},
+  {id:18,name:"Jane Rouland",     phone:"2174156114", addr:"3303 Lakemere Drive, Springfield 62711",            zip:"62711", type:"Water Damage", owner:"Yes", desc:"New home; sump pump pipe shifted, carpet and insulation are wet.", rcvd:"Jun 13 @ 11:45 AM", calls:1, def:"New"},
+  {id:19,name:"Tom Sestak",       phone:"2178168846", addr:"2305 Gander Road, Springfield 62711",               zip:"62711", type:"Water Damage", owner:"Yes", desc:"Requesting to update contact number; confirming appointment for June 13.", rcvd:"Jun 13 @ 11:09 AM", calls:1, def:"New"},
+  {id:20,name:"Leslie Frederick", phone:"2178364810", addr:"2808 Covered Wagon Trail, Springfield 62711",       zip:"62711", type:"Water Damage", owner:"Yes", desc:"Basement water — sump pump intact but needs immediate extraction ASAP.", rcvd:"Jun 13 @ 10:05 AM", calls:1, def:"New"},
+  {id:21,name:"Kalpana Desai",    phone:"2178990830", addr:"212 Astoria Road, Springfield 62704",               zip:"62704", type:"Water Damage", owner:"Yes", desc:"Called Friday; no callback received. Smell upstairs. Insurance claim #7010298024.", rcvd:"Jun 15 @ 6:11 AM", calls:1, def:"New"},
+  {id:22,name:"Patrick Quigley", phone:"2174140414", addr:"2305 Amber Court, Springfield 62704",                zip:"62704", type:"Water Damage", owner:"Yes", desc:"Needs someone to contact him today — described as urgent.", rcvd:"Jun 13 @ 5:38 PM", calls:1, def:"New"},
+  {id:23,name:"Jon Launer",       phone:"8085428476", addr:"112 Norwalk Road, Springfield 62704",               zip:"62704", type:"Water Damage", owner:"Yes", desc:"Property flooded by recent storm.", rcvd:"Jun 13 @ 5:28 PM", calls:1, def:"New"},
+  {id:24,name:"Megan Forness",    phone:"2177203433", addr:"119 Calvin Avenue, Springfield 62704",              zip:"62704", type:"Water Damage", owner:"Yes", desc:"Power outage caused battery backup failure; 3 inches of water in basement. Carpet and mold concern.", rcvd:"Jun 13 @ 3:28 PM", calls:1, def:"New"},
+  {id:25,name:"Jennifer Notariano",phone:"9855070166",addr:"1604 South Lowell Avenue, Springfield 62704",       zip:"62704", type:"Water Damage", owner:"Yes", desc:"Receding water in basement; wants blowout/restoration services.", rcvd:"Jun 13 @ 12:00 PM", calls:1, def:"New"},
+  {id:26,name:"Lisa Belz",        phone:"2174156454", addr:"3125 La Conner Drive, Springfield 62704",           zip:"62704", type:"Water Damage", owner:"No",  desc:"Calling on behalf of son with water damage. Situation described as urgent.", rcvd:"Jun 13 @ 9:26 AM", calls:1, def:"New"},
+  {id:27,name:"Courtney Putman",  phone:"2174147190", addr:"12220 Salisbury Road, Pleasant Plains 62677",       zip:"62677", type:"Water Damage", owner:"Yes", desc:"Water in garage.", rcvd:"Jun 14 @ 9:07 AM", calls:1, def:"New"},
+  {id:28,name:"Bryan West",       phone:"2176150383", addr:"260 Larkspur Drive, Decatur 62522",                 zip:"other", type:"Water Damage", owner:"Yes", desc:"Carpet wet near sump pump.", rcvd:"Jun 18 @ 5:13 PM", calls:1, def:"New"},
+  {id:29,name:"Matt Brown",       phone:"2175193492", addr:"421 Woodside Trail Unit E2/E1, Decatur 62521",      zip:"other", type:"Water Damage", owner:"No",  desc:"Woodland Condo water infiltration.", rcvd:"Jun 17 @ 7:39 PM", calls:1, def:"New"},
+  {id:30,name:"Scott Dowell",     phone:"2175207624", addr:"1517 South 44th Street, Decatur 62521",             zip:"other", type:"Water Damage", owner:"Yes", desc:"Crawl space water damage.", rcvd:"Jun 17 @ 7:31 PM", calls:1, def:"New"},
+  {id:31,name:"Cindy Jenkins",    phone:"2178556774", addr:"1020 Veech Lane, Decatur 62521",                    zip:"other", type:"Water Damage", owner:"Yes", desc:"URGENT: sewage backing out of shower; basement is flooding.", rcvd:"Jun 17 @ 7:01 PM", calls:1, def:"New"},
+  {id:32,name:"Rebecca Worthin",  phone:"2175215380", addr:"2560 South Long Creek Road, Decatur 62521",         zip:"other", type:"Water Damage", owner:"Yes", desc:"Water coming out of basement.", rcvd:"Jun 17 @ 6:30 PM", calls:1, def:"New"},
+  {id:33,name:"Hannah Hissong",   phone:"2603121203", addr:"3926 East Park Lane, Decatur 62521",                zip:"other", type:"Water Damage", owner:"Yes", desc:"Water in garage and lower level.", rcvd:"Jun 17 @ 6:19 PM", calls:1, def:"New"},
+  {id:34,name:"West Reese",       phone:"7143853849", addr:"Timber Ridge Drive, Springfield",                   zip:"other", type:"Water Damage", owner:"—",   desc:"Requesting inspection photos from previous job.", rcvd:"Jun 15 @ 5:29 PM", calls:1, def:"New"},
+  {id:35,name:"John Richardson",  phone:"2175535184", addr:"Springfield",                                       zip:"other", type:"Other",        owner:"—",   desc:"Had a scheduled appointment to have basement dried; no crew arrived.", rcvd:"Jun 13 @ 1:51 PM", calls:1, def:"New"},
+  {id:36,name:"Jim Highfill Jr",  phone:"2174152981", addr:"Springfield",                                       zip:"other", type:"Other",        owner:"—",   desc:"Workers currently onsite; cabinets need to be moved.", rcvd:"Jun 14 @ 8:39 AM", calls:1, def:"New"},
+  {id:37,name:"Rosemary Leistner",phone:"2177413028", addr:"Springfield",                                       zip:"other", type:"Other",        owner:"—",   desc:"Calling to confirm someone will be onsite Monday at 8am.", rcvd:"Jun 14 @ 12:44 PM", calls:1, def:"New"},
+  {id:38,name:"Rochelle Sales",   phone:"2175217772", addr:"Decatur",                                           zip:"other", type:"Other",        owner:"—",   desc:"Requesting an estimate for cleaning 3 rooms.", rcvd:"Jun 13 @ 4:08 PM", calls:1, def:"New"},
+  {id:39,name:"Cathy Sladge",     phone:"6183151959", addr:"Mount Vernon",                                      zip:"other", type:"Other",        owner:"—",   desc:"Checking her position on list for basement water removal.", rcvd:"Jun 13 @ 2:26 PM", calls:1, def:"New"},
+  {id:40,name:"Lizy",             phone:"9102614215", addr:"Fayetteville",                                      zip:"other", type:"Other",        owner:"—",   desc:"Carpet cleaning inquiry.", rcvd:"Jun 16 @ 5:14 PM", calls:1, def:"New"},
+  {id:41,name:"Lynn Renner",      phone:"2172544784", addr:"Mattoon",                                           zip:"other", type:"Other",        owner:"—",   desc:"Called to cancel a service request.", rcvd:"Jun 16 @ 8:34 PM", calls:1, def:"Cancelled"},
+];
+
+const OPTS = ["New","Called-No Answer","Contacted","Scheduled","Crew Dispatched","In Progress","Complete","Cancelled"];
+const SBG = {"New":"#e8f5e9","Called-No Answer":"#fff3e0","Contacted":"#e3f2fd","Scheduled":"#f3e5f5","Crew Dispatched":"#e0f2f1","In Progress":"#fffde7","Complete":"#c8e6c9","Cancelled":"#f5f5f5"};
+
+function gs(phone){ return localStorage.getItem('pr_'+phone) || null; }
+function ss(phone,v){ localStorage.setItem('pr_'+phone,v); }
+
+function fmtPhone(p){
+  if(p.length===10) return '('+p.slice(0,3)+') '+p.slice(3,6)+'-'+p.slice(6);
+  return p;
+}
+
+function cardCls(j){
+  if(j.calls>=3) return 'cu';
+  if(j.def==='Cancelled') return 'cc';
+  if(j.calls>1) return 'cr';
+  return 'cn';
+}
+function badgeCls(j){
+  if(j.calls>=3) return 'bu';
+  if(j.def==='Cancelled') return 'bc';
+  if(j.calls>1) return 'br';
+  return 'bn';
+}
+function badgeTxt(j){
+  if(j.calls>=3) return 'URGENT &mdash; '+j.calls+' calls';
+  if(j.def==='Cancelled') return 'CANCELLED';
+  if(j.calls>1) return 'REPEAT &mdash; '+j.calls+' calls';
+  return 'NEW';
+}
+
+function renderCard(j){
+  var status = gs(j.phone) || j.def;
+  var bg = SBG[status]||'#fff';
+  var opts = OPTS.map(function(o){ return '<option'+(o===status?' selected':'')+'>'+o+'</option>'; }).join('');
+  return '<div class="card '+cardCls(j)+'" id="c'+j.id+'">'
+    +'<div class="ctop"><div><div class="cname">'+j.name+'</div><div class="cphone">'+fmtPhone(j.phone)+'</div></div>'
+    +'<span class="badge '+badgeCls(j)+'">'+badgeTxt(j)+'</span></div>'
+    +'<div class="det"><span class="lbl">Address</span>'+j.addr+'</div>'
+    +'<div class="det"><span class="lbl">Type</span>'+j.type+'</div>'
+    +'<div class="det"><span class="lbl">Owner</span>'+j.owner+'</div>'
+    +'<div class="desc">'+j.desc+'</div>'
+    +'<div class="ctime">Received: '+j.rcvd+'</div>'
+    +'<div class="sel-row"><select class="sts" data-phone="'+j.phone+'" style="background:'+bg+'" onchange="upd(this)">'+opts+'</select></div>'
+    +'</div>';
+}
+
+function upd(sel){
+  ss(sel.dataset.phone, sel.value);
+  sel.style.background = SBG[sel.value]||'#fff';
+}
+
+function sortFn(a,b){
+  var ac = a.def==='Cancelled'?1:0, bc = b.def==='Cancelled'?1:0;
+  if(ac!==bc) return ac-bc;
+  return b.calls-a.calls;
+}
+
+function renderSec(title, cls, jobs){
+  if(!jobs.length) return '';
+  return '<div class="sec '+cls+'"><div class="sec-hdr">'+title+' <span class="cnt">'+jobs.length+'</span></div>'
+    +'<div class="grid">'+jobs.map(renderCard).join('')+'</div></div>';
+}
+
+var urgent = JOBS.filter(function(j){return j.calls>=3;});
+var z11    = JOBS.filter(function(j){return j.zip==='62711';}).sort(sortFn);
+var z04    = JOBS.filter(function(j){return j.zip==='62704';}).sort(sortFn);
+var z77    = JOBS.filter(function(j){return j.zip==='62677';}).sort(sortFn);
+var zOth   = JOBS.filter(function(j){return j.zip==='other';}).sort(sortFn);
+
+document.getElementById('board').innerHTML = [
+  renderSec('!! URGENT — Multiple Callbacks Required', 'sec-urgent', urgent),
+  renderSec('ZIP 62711 — Springfield', 'sec-62711', z11),
+  renderSec('ZIP 62704 — Springfield / Jerome', 'sec-62704', z04),
+  renderSec('ZIP 62677 — Pleasant Plains', 'sec-62677', z77),
+  renderSec('Other Areas', 'sec-other', zOth),
+].join('');
+
+var now = new Date();
+var disp = now.toLocaleString('en-US',{timeZone:'America/Chicago',month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true});
+document.getElementById('ts').innerHTML = 'Updated<br>'+disp+' CT';
+document.getElementById('footer').innerHTML = 'Peerless Restoration Dispatch Board &mdash; auto-generated '+now.toISOString().slice(0,16).replace('T',' ')+' UTC &mdash; '+JOBS.length+' total calls';
 </script>
 </body>
 </html>
